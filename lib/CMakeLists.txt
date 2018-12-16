@@ -5,6 +5,7 @@ SET(CPT_H_FILES gpgpu/cuda_utils.h
                 scene/loader/scene_loader.h
                 scene/loader/mesh_loader.h
                 scene/geometry/geometry.h
+                scene/geometry/vertex_geometry.h
                 scene/geometry/geometry_aggregate.h
                 scene/geometry/vertex_container.h
                 scene/geometry/triangle.h
@@ -14,7 +15,6 @@ SET(CPT_CPP_FILES gpgpu/cuda_utils.cpp
                   scene/scene.cpp
                   scene/geometry/geometry.cpp
                   scene/geometry/geometry_aggregate.cpp
-                  scene/geometry/vertex_container.cpp
                   scene/geometry/triangle.cpp
                   scene/object.cpp
                   scene/loader/scene_loader.cpp

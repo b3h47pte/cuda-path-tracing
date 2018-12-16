@@ -19,6 +19,7 @@ const std::string OBJ_EXTENSION = ".obj";
 
 GeometryPtr load_mesh_from_file(const std::string& fname) {
     bfs::path fpath(fname);    
+    CHECK_AND_THROW_ERROR(bfs::exists(fpath), "Mesh does not exist [" << fname << "].");
 
     // Dispatch based on file extension.
     std::string extension = fpath.extension().native();

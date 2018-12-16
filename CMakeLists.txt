@@ -1,5 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.8 FATAL_ERROR)
 PROJECT("cuda-path-tracing" LANGUAGES CXX CUDA)
+ENABLE_TESTING()
 
 # Extra CMake stuff.
 SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -16,6 +17,7 @@ SET(CMAKE_CUDA_STANDARD_REQUIRED ON)
 # Options
 OPTION(WITH_PROGRAMS "Compile programs." ON)
 OPTION(WITH_TEST_ASSETS "Download and setup test assets." ON)
+OPTION(WITH_TESTS "Compile tests." ON)
 
 # Setup test assets.
 IF(WITH_TEST_ASSETS)
@@ -41,14 +43,22 @@ ENDIF()
 
 # Packages
 FIND_PACKAGE(Boost 1.60 REQUIRED
-             COMPONENTS system filesystem program_options)
+             COMPONENTS system filesystem program_options unit_test_framework)
 FIND_PACKAGE(Eigen3 REQUIRED)
 
 # Compile library and programs.
 ADD_SUBDIRECTORY("lib")
-IF(WITH_PROGRAMS)
+
+IF(WITH_PROGRAMS OR WITH_TESTS)
     INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ProgramUtilities.cmake)
+ENDIF()
+
+IF(WITH_PROGRAMS)
     ADD_SUBDIRECTORY("programs")
+ENDIF()
+
+IF(WITH_TESTS)
+    ADD_SUBDIRECTORY("tests")
 ENDIF()
 
 # compile_commands.json for YCM.

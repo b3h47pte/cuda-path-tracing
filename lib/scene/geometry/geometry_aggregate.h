@@ -10,12 +10,12 @@ namespace cpt {
 class GeometryAggregate: public Geometry
 {
 public:
-    GeometryAggregate(
-        const VertexContainerPtr& vertex_container,
-        const std::vector<GeometryPtr>& children);
+    GeometryAggregate(const std::vector<GeometryPtr>& children);
+
+    size_t num_children() const { return _children.size(); }
+    const GeometryPtr& get_geometry(size_t idx) const { return _children[idx]; }
 
 private:
-    VertexContainerPtr _vertex_container;
     std::vector<GeometryPtr> _children;
 };
 

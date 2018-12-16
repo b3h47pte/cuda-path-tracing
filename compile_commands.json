@@ -21,11 +21,6 @@
 },
 {
   "directory": "/data/mikebao/github/cuda-path-tracing/build/lib",
-  "command": "/usr/bin/c++   -I/data/mikebao/github/cuda-path-tracing/lib -isystem /opt/cuda/include -isystem /usr/include/eigen3 -isystem /data/mikebao/github/cuda-path-tracing/external/include   -Wall -Werror -g -fPIC   -std=gnu++11 -o CMakeFiles/cpt.dir/scene/geometry/vertex_container.cpp.o -c /data/mikebao/github/cuda-path-tracing/lib/scene/geometry/vertex_container.cpp",
-  "file": "/data/mikebao/github/cuda-path-tracing/lib/scene/geometry/vertex_container.cpp"
-},
-{
-  "directory": "/data/mikebao/github/cuda-path-tracing/build/lib",
   "command": "/usr/bin/c++   -I/data/mikebao/github/cuda-path-tracing/lib -isystem /opt/cuda/include -isystem /usr/include/eigen3 -isystem /data/mikebao/github/cuda-path-tracing/external/include   -Wall -Werror -g -fPIC   -std=gnu++11 -o CMakeFiles/cpt.dir/scene/geometry/triangle.cpp.o -c /data/mikebao/github/cuda-path-tracing/lib/scene/geometry/triangle.cpp",
   "file": "/data/mikebao/github/cuda-path-tracing/lib/scene/geometry/triangle.cpp"
 },
@@ -48,5 +43,20 @@
   "directory": "/data/mikebao/github/cuda-path-tracing/build/programs",
   "command": "/usr/bin/c++   -isystem /data/mikebao/github/cuda-path-tracing/lib -isystem /opt/cuda/include -isystem /usr/include/eigen3 -isystem /data/mikebao/github/cuda-path-tracing/external/include   -Wall -Werror -g   -std=gnu++11 -o CMakeFiles/path_tracer.dir/path_tracer.cpp.o -c /data/mikebao/github/cuda-path-tracing/programs/path_tracer.cpp",
   "file": "/data/mikebao/github/cuda-path-tracing/programs/path_tracer.cpp"
+},
+{
+  "directory": "/data/mikebao/github/cuda-path-tracing/build/tests",
+  "command": "/usr/bin/c++   -isystem /data/mikebao/github/cuda-path-tracing/lib -isystem /opt/cuda/include -isystem /usr/include/eigen3 -isystem /data/mikebao/github/cuda-path-tracing/external/include   -Wall -Werror -g   -std=gnu++11 -o CMakeFiles/vertex_container_test.dir/vertex_container_test.cpp.o -c /data/mikebao/github/cuda-path-tracing/tests/vertex_container_test.cpp",
+  "file": "/data/mikebao/github/cuda-path-tracing/tests/vertex_container_test.cpp"
+},
+{
+  "directory": "/data/mikebao/github/cuda-path-tracing/build/tests",
+  "command": "/usr/bin/c++   -isystem /data/mikebao/github/cuda-path-tracing/lib -isystem /opt/cuda/include -isystem /usr/include/eigen3 -isystem /data/mikebao/github/cuda-path-tracing/external/include   -Wall -Werror -g   -std=gnu++11 -o CMakeFiles/mesh_loader_test.dir/mesh_loader_test.cpp.o -c /data/mikebao/github/cuda-path-tracing/tests/mesh_loader_test.cpp",
+  "file": "/data/mikebao/github/cuda-path-tracing/tests/mesh_loader_test.cpp"
+},
+{
+  "directory": "/data/mikebao/github/cuda-path-tracing/build/tests",
+  "command": "/usr/bin/c++   -isystem /data/mikebao/github/cuda-path-tracing/lib -isystem /opt/cuda/include -isystem /usr/include/eigen3 -isystem /data/mikebao/github/cuda-path-tracing/external/include   -Wall -Werror -g   -std=gnu++11 -o CMakeFiles/scene_loader_test.dir/scene_loader_test.cpp.o -c /data/mikebao/github/cuda-path-tracing/tests/scene_loader_test.cpp",
+  "file": "/data/mikebao/github/cuda-path-tracing/tests/scene_loader_test.cpp"
 }
 ]

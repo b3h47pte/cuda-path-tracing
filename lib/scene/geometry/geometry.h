@@ -7,9 +7,6 @@ namespace cpt {
 
 class Geometry: public Object
 {
-
-protected:
-    VertexContainerPtr _vertex_container;;
 };
 
 using GeometryPtr = std::shared_ptr<Geometry>;

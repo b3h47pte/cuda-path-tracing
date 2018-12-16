@@ -1,11 +1,10 @@
 #pragma once
 
-#include "scene/geometry/geometry.h"
-#include "scene/geometry/vertex_container.h"
+#include "scene/geometry/vertex_geometry.h"
 
 namespace cpt {
 
-class Triangle: public Geometry
+class Triangle: public VertexGeometry
 {
 public:
     Triangle(
@@ -14,8 +13,11 @@ public:
         const Eigen::Vector3i& uv_indices,
         const Eigen::Vector3i& normal_indices);
 
+    const Eigen::Vector3i& get_vertex_indices() const { return _vertex_indices; }
+    const Eigen::Vector3i& get_uv_indices() const { return _uv_indices; }
+    const Eigen::Vector3i& get_normal_indices() const { return _normal_indices; }
+
 private:
-    VertexContainerPtr _vertex_container;
     Eigen::Vector3i _vertex_indices;
     Eigen::Vector3i _uv_indices;
     Eigen::Vector3i _normal_indices;

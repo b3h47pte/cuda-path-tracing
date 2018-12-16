@@ -2,13 +2,12 @@
 
 #include "scene/geometry/triangle.h"
 #include "utilities/eigen_utility.h"
+#include "utilities/error.h"
 
 namespace cpt {
 
 GeometryAggregate::GeometryAggregate(
-    const VertexContainerPtr& vertex_container,
     const std::vector<GeometryPtr>& children):
-    _vertex_container(vertex_container),
     _children(children)
 {
 
@@ -24,6 +23,25 @@ GeometryAggregatePtr GeometryAggregateBuilder::construct() const
     std::vector<GeometryPtr> children;
     children.reserve(_face_pos_idx.size());
     for (size_t i = 0; i < _face_pos_idx.size(); ++i) {
+        // Do sanitfy check to make sure the face indexes properly.
+        for (auto j = 0; j < 3; ++j) {
+            CHECK_AND_THROW_ERROR(
+                _face_pos_idx[i](j) >= 0 && _face_pos_idx[i](j) < vertex_container->num_positions(), 
+                "Vertex position index out of bound.");
+        }
+
+        for (auto j = 0; j < 2; ++j) {
+            CHECK_AND_THROW_ERROR(
+                _face_uv_idx[i](j) >= 0 && _face_uv_idx[i](j) < vertex_container->num_uvs(), 
+                "Vertex UV index out of bound.");
+        }
+
+        for (auto j = 0; j < 3; ++j) {
+            CHECK_AND_THROW_ERROR(
+                _face_normal_idx[i](j) >= 0 && _face_normal_idx[i](j) < vertex_container->num_normals(), 
+                "Vertex normal index out of bound.");
+        }
+
         children.emplace_back(std::make_shared<Triangle>(
             vertex_container,
             _face_pos_idx[i],
@@ -31,9 +49,7 @@ GeometryAggregatePtr GeometryAggregateBuilder::construct() const
             _face_normal_idx[i]));
     }
 
-    auto geometry = std::make_shared<GeometryAggregate>(
-        vertex_container,
-        children);
+    auto geometry = std::make_shared<GeometryAggregate>(children);
     return geometry;
 }
 
