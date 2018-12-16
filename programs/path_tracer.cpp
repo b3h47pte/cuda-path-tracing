@@ -10,7 +10,8 @@ int main(int argc, char** argv) {
     // Parse command line.
     po::options_description desc("Options");
     desc.add_options()
-        ("scene", po::value<std::string>()->required(), "JSON scene file.");
+        ("scene", po::value<std::string>()->required(), "JSON scene file.")
+        ("options", po::value<std::string>()->required(), "JSON options file.");
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -22,7 +23,7 @@ int main(int argc, char** argv) {
     // Load scene.
     const std::string sceneFname = vm["scene"].as<std::string>();
     std::cout << "Loading Scene [" << sceneFname << "]..." << std::endl;
-    cpt::ScenePtr scene = cpt::loadSceneFromJson(sceneFname);
+    cpt::ScenePtr scene = cpt::load_scene_from_json(sceneFname);
 
     // Render.
 

@@ -10,10 +10,7 @@ void initialize_cuda() {
     // Ensure that there exists a suitable GPU for execution.
     int device_count = 0;
     CHECK_CUDA_ERROR(cudaGetDeviceCount(&device_count));
-
-    if (device_count <= 0) {
-        throw std::runtime_error("No suitable CUDA Device found.");
-    }
+    CHECK_AND_THROW_ERROR(device_count > 0, "No suitable CUDA Device found.");
 
     // Use device 0 by default.
     cudaDeviceProp prop;

@@ -10,5 +10,5 @@ sed -i 's/\\/\//g' Sponza/sponza.mtl
 To render:
 
 ```
-path_tracer --scene assets/sponza.json
+path_tracer --scene assets/sponza.json --options assets/sponza_options.json
 ```

@@ -42,6 +42,7 @@ ENDIF()
 # Packages
 FIND_PACKAGE(Boost 1.60 REQUIRED
              COMPONENTS system filesystem program_options)
+FIND_PACKAGE(Eigen3 REQUIRED)
 
 # Compile library and programs.
 ADD_SUBDIRECTORY("lib")
