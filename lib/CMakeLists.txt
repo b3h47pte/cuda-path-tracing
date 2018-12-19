@@ -15,6 +15,7 @@ SET(CPT_CPP_FILES gpgpu/cuda_utils.cpp
                   scene/scene.cpp
                   scene/geometry/geometry.cpp
                   scene/geometry/geometry_aggregate.cpp
+                  scene/geometry/vertex_container.cpp
                   scene/geometry/triangle.cpp
                   scene/object.cpp
                   scene/loader/scene_loader.cpp

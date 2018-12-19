@@ -1,0 +1,19 @@
+{
+    "type": "root",
+    "children": [
+        {
+            "type": "mesh",
+            "filename": "plane.obj"
+        },
+        {
+            "type": "mesh",
+            "filename": "plane.obj",
+            "children": [
+                {
+                    "type": "mesh",
+                    "filename": "plane.obj"
+                }
+            ]
+        }
+    ]
+}

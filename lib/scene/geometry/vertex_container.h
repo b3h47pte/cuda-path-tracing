@@ -7,6 +7,12 @@ namespace cpt {
 
 struct VertexContainer
 {
+    VertexContainer() = default;
+    VertexContainer(
+        Eigen::Array3Xf inPositions,
+        Eigen::Array2Xf inUvs,
+        Eigen::Array3Xf inNormals);
+
     Eigen::Array3Xf positions;
     Eigen::Array2Xf uvs;
     Eigen::Array3Xf normals;

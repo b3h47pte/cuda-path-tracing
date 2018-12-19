@@ -10,6 +10,9 @@ class Scene {
 public:
     Scene(std::vector<GeometryPtr>&& geometry);
 
+    size_t num_geometry() const { return _geometry.size(); }
+    const GeometryPtr& geometry(size_t idx) const { return _geometry[idx]; }
+
 private:
     std::vector<GeometryPtr> _geometry;
 };

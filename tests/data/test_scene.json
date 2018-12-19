@@ -1,0 +1,9 @@
+{
+    "type": "root",
+    "children": [
+        {
+            "type": "mesh",
+            "filename": "plane.obj"
+        }
+    ]
+}

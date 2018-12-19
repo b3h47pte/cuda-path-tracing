@@ -11,18 +11,25 @@ namespace cpt {
 namespace {
 
 void load_json_mesh(const bfs::path& base_path, const nlohmann::json& jobj, SceneBuilder& builder) {
-    GeometryPtr geom = load_mesh_from_file((base_path / bfs::path(jobj["filename"].get<std::string>())).native());
+    auto filenameIt = jobj.find("filename");
+    CHECK_AND_THROW_ERROR(filenameIt != jobj.end(), "Invalid mesh object. No filename specified.");
+
+    GeometryPtr geom = load_mesh_from_file((base_path / bfs::path(filenameIt->get<std::string>())).native());
     builder.add_geometry(geom);
 }
 
 void load_json_scene_object_hierarchy(const bfs::path& base_path, const nlohmann::json& jobj, SceneBuilder& builder) {
+    // No type field? Error out.
+    auto typeIt = jobj.find("type");
+    CHECK_AND_THROW_ERROR(typeIt != jobj.end(), "Invalid scene object. No type specified.");
+
     // Check type and dispatch to appropriate function.
-    if (jobj["type"] == "mesh") {
+    if (*typeIt == "mesh") {
         load_json_mesh(base_path, jobj, builder);
-    } else if (jobj["type"] == "root") {
+    } else if (*typeIt == "root") {
         // Can safely ignore the root.
     } else {
-        THROW_ERROR("Hierarchy object type [" << jobj["type"] << "] is not supported.");
+        THROW_ERROR("Hierarchy object type [" << *typeIt << "] is not supported.");
     }
 
     // Handle children.
