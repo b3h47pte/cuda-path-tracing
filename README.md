@@ -9,3 +9,16 @@ Note that the version requirements are what I have tested with, lower versions m
 * TinyObjLoader (https://github.com/syoyo/tinyobjloader) [Provided in external]
 
 # Compilation
+
+```
+mkdir build
+cd build
+cmake ../
+make
+```
+
+## Options
+
+* `WITH_PROGRAMS=ON/OFF`: Whether to compile the example programs in the `programs` folder.
+* `WITH_TEST_ASSETS=ON/OFF`: Whether to download the example assets in the `assets` folder.
+* `WITH_TESTS=ON/OFF`: Whether to compile the tests found in the `tests` folder.
