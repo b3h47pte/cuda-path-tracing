@@ -1,5 +1,6 @@
 #pragma once
 
+#include <json/json.hpp>
 #include "math/transform.h"
 #include "scene/camera/camera.h"
 #include "scene/geometry/geometry.h"
@@ -10,7 +11,7 @@
 
 namespace cpt {
 
-ScenePtr load_scene_from_json(const std::string& fname);
+ScenePtr load_scene_from_json(const nlohmann::json& jobj, const std::string& base_dir);
 
 // Stateful SceneBuilder.
 class SceneBuilder

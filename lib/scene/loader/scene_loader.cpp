@@ -1,6 +1,5 @@
 #include "scene_loader.h"
 #include <boost/filesystem.hpp>
-#include <fstream>
 #include <json/json.hpp>
 #include "scene/loader/camera_loader.h"
 #include "scene/loader/mesh_loader.h"
@@ -81,21 +80,15 @@ void load_json_scene_object_hierarchy(const bfs::path& base_path, const nlohmann
 
 }
 
-ScenePtr load_scene_from_json(const std::string& fname)
+ScenePtr load_scene_from_json(const nlohmann::json& jobj, const std::string& base_dir)
 {
-    CHECK_AND_THROW_ERROR(bfs::exists(fname), "Scene JSON does not exists [" << fname << "].");
-    nlohmann::json jobj;
-
-    const bfs::path base_path = bfs::path(fname).parent_path();
-    std::ifstream fs(fname);
-    fs >> jobj;
-
+    CHECK_AND_THROW_ERROR(bfs::exists(base_dir), "Base directory does not exist [" << base_dir << "].");
+    const bfs::path base_path(base_dir);
     SceneBuilder builder;
 
     // Load in scene object hierarchy (geometry, cameras, lights).
     load_json_scene_object_hierarchy(base_path, jobj, builder);
 
-    fs.close();
     return builder.construct();
 }
 
@@ -106,11 +99,13 @@ ScenePtr SceneBuilder::construct() {
 }
 
 void SceneBuilder::add_geometry(const GeometryPtr& geometry) {
+    geometry->set_object_to_world_xform(current_transform());
     _geometry.push_back(geometry);
 }
 
 void SceneBuilder::add_camera(const std::string& id, const CameraPtr& camera) {
     CHECK_AND_THROW_ERROR(_cameras.find(id) == _cameras.end(), "Can not reuse the same camera ID for two or more cameras.");
+    camera->set_object_to_world_xform(current_transform());
     _cameras[id] = camera;
 }
 

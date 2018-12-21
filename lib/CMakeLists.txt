@@ -15,7 +15,10 @@ SET(CPT_H_FILES gpgpu/cuda_utils.h
                 scene/geometry/vertex_container.h
                 scene/geometry/triangle.h
                 scene/object.h
-                utilities/error.h)
+                utilities/eigen_utility.h
+                utilities/error.h
+                utilities/filesystem_utility.h
+                utilities/json_utility.h)
 
 SET(CPT_CPP_FILES gpgpu/cuda_utils.cpp
                   math/transform.cpp
@@ -30,7 +33,9 @@ SET(CPT_CPP_FILES gpgpu/cuda_utils.cpp
                   scene/loader/scene_loader.cpp
                   scene/loader/mesh_loader.cpp
                   scene/loader/camera_loader.cpp
-                  scene/loader/xform_loader.cpp)
+                  scene/loader/xform_loader.cpp
+                  utilities/filesystem_utility.cpp
+                  utilities/json_utility.cpp)
 
 ADD_LIBRARY(cpt SHARED ${CPT_H_FILES} ${CPT_CPP_FILES})
 
@@ -46,7 +51,6 @@ TARGET_LINK_LIBRARIES(cpt Boost::system Boost::filesystem)
 
 # Eigen
 TARGET_INCLUDE_DIRECTORIES(cpt SYSTEM PUBLIC ${EIGEN3_INCLUDE_DIR})
-MESSAGE(STATUS ${EIGEN3_INCLUDE_DIR})
 
 # External
 TARGET_INCLUDE_DIRECTORIES(cpt SYSTEM PUBLIC ${PROJECT_SOURCE_DIR}/external/include)

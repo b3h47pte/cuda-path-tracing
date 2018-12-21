@@ -6,7 +6,11 @@ namespace cpt {
 
 class PinholePerspectiveCamera: public Camera
 {
+public:
 
+private:
 };
+
+using PinholePerspectiveCameraPtr = std::shared_ptr<PinholePerspectiveCamera>;
 
 }

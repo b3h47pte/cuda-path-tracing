@@ -1,9 +1,35 @@
 {
-    "type": "root",
+    "type": "xform",
+    "object": {
+        "scale": [0.01, 0.01, 0.01]
+    },
     "children": [
         {
             "type": "mesh",
             "filename": "Sponza/sponza.obj"
+        },
+        {
+            "type": "xform",
+            "object": {
+                "translation": [666.735, 150.326, 14.077],
+                "scale": [1.0, 1.0, 1.0],
+                "rotation": [2.662, 450.200, 0.0],
+                "rotation_type": "euler_xyz"
+            },
+            "children": [
+                {
+                    "type": "camera",
+                    "id": "main",
+                    "object": {
+                        "type": "pinhole_perspective",
+                        "horizontal_fov": 35.0,
+                        "film_aspect_ratio": 1.7778,
+                        "focal_length_mm": 67.662,
+                        "near_z": 0.1,
+                        "far_z": 10000.0
+                    }
+                }
+            ]
         }
     ]
 }
