@@ -15,7 +15,8 @@ SET(TEST_CPPS mesh_loader_test.cpp
               distance_test.cpp
               pinhole_perspective_camera_test.cpp
               transform_test.cpp
-              rotation_test.cpp)
+              rotation_test.cpp
+              xform_loader_test.cpp)
 
 FOREACH(FNAME ${TEST_CPPS})
     GET_FILENAME_COMPONENT(BASE ${FNAME} NAME_WE)
