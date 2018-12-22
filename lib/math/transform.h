@@ -9,6 +9,14 @@ class Transform
 public:
     Transform();
 
+    static Transform from_transform_matrix(const Eigen::Matrix4f& matrix);
+
+    Transform(const Transform&) = default;
+    Transform(Transform&&) = default;
+    Transform& operator=(const Transform&) = default;
+    Transform& operator=(Transform&&) = default;
+    ~Transform() = default;
+
     // Set to be equivalent to the identity matrix.
     void reset();
 
@@ -35,6 +43,5 @@ private:
     Eigen::Matrix3f _rotation;
     Eigen::Vector3f _translation;
 };
-
 
 }

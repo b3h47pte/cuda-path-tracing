@@ -2,6 +2,7 @@
 
 #include <Eigen/Core>
 #include <scene/geometry/geometry.h>
+#include <iostream>
 
 // TODO: Rename..
 extern Eigen::Array3Xf ref_positions;

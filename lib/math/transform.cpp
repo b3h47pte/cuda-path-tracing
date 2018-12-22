@@ -1,5 +1,9 @@
 #include "transform.h"
 
+#include <Eigen/Dense>
+#include "math/rotation.h"
+#include "utilities/error.h"
+
 namespace cpt {
 
 Transform::Transform() {
@@ -17,6 +21,8 @@ void Transform::set_translation(const Eigen::Vector3f& trans) {
 }
 
 void Transform::set_rotation(const Eigen::Matrix3f& rot) {
+    // Check to make sure we have a valid rotation.
+    CHECK_AND_THROW_ERROR(std::abs(rot.determinant() - 1.f) < 1e-6, "Invalid rotation matrix [Determinant:" <<  rot.determinant() << "].");
     _rotation = rot;
 }
 
@@ -42,14 +48,26 @@ Transform& Transform::operator*=(const Transform& other) {
     _translation += (*this * other._translation);
 
     Eigen::Matrix3f newRotScaleMat = _rotation * _scale.asDiagonal() * other._rotation * other._scale.asDiagonal();
-    _scale = newRotScaleMat.colwise().norm();
-    _rotation = newRotScaleMat.array().colwise() / _scale.array();
+    decompose_scale_rotation(newRotScaleMat, _rotation, _scale);
     return *this;
 }
 
 Transform Transform::operator*(const Transform& other) const {
     Transform xform = *this;
     xform *= other;
+    return xform;
+}
+
+Transform Transform::from_transform_matrix(const Eigen::Matrix4f& matrix) {
+    Transform xform;
+    xform.set_translation(matrix.block(0, 3, 3, 1));
+
+    Eigen::Matrix3f rot;
+    Eigen::Vector3f scale;
+    decompose_scale_rotation(matrix.block(0,0,3,3), rot, scale);    
+
+    xform.set_scale(scale);
+    xform.set_rotation(rot);
     return xform;
 }
 
