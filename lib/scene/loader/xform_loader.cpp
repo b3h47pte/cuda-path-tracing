@@ -1,5 +1,6 @@
 #include "xform_loader.h"
 
+#include "math/angles.h"
 #include "math/rotation.h"
 #include "utilities/error.h"
 #include "utilities/json_utility.h"
@@ -9,7 +10,11 @@ namespace {
 
 Eigen::Matrix3f load_rotation_matrix_from_type(const std::string& type, const nlohmann::json& jobj) {
     if (type == "euler_xyz") {
-        return get_euler_xyz_rotation_matrix(load_fixed_size_vector_from_array<float,3>(jobj));
+        Eigen::Vector3f xyz = load_fixed_size_vector_from_array<float,3>(jobj);
+        for (auto i = 0; i < 3; ++i) {
+            xyz(i) = Angle::from_degrees(xyz(i)).radians();
+        }
+        return get_euler_xyz_rotation_matrix(xyz);
     } else {
         THROW_ERROR("Unsupported rotation type: " << type);
     }
