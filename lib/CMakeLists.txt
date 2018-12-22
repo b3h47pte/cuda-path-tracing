@@ -1,6 +1,9 @@
 FIND_PACKAGE(CUDA REQUIRED)
 
 SET(CPT_H_FILES gpgpu/cuda_utils.h
+                math/angles.h
+                math/distance.h
+                math/rotation.h
                 math/transform.h
                 scene/scene.h
                 scene/camera/camera.h
@@ -21,6 +24,9 @@ SET(CPT_H_FILES gpgpu/cuda_utils.h
                 utilities/json_utility.h)
 
 SET(CPT_CPP_FILES gpgpu/cuda_utils.cpp
+                  math/angles.cpp
+                  math/distance.cpp
+                  math/rotation.cpp
                   math/transform.cpp
                   scene/scene.cpp
                   scene/camera/camera.cpp

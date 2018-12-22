@@ -1,4 +1,6 @@
 #include "camera_loader.h"
+#include "math/angles.h"
+#include "math/distance.h"
 #include "scene/camera/pinhole_perspective_camera.h"
 #include "utilities/error.h"
 
@@ -8,8 +10,7 @@ namespace {
 const std::string PINHOLE_PERSPECTIVE = "pinhole_perspective";
 
 CameraPtr load_pinhole_perspective_camera_from_json(const nlohmann::json& jobj) {
-    auto camera = std::make_shared<PinholePerspectiveCamera>();
-    
+   
     auto fov_it = jobj.find("horizontal_fov");
     CHECK_AND_THROW_ERROR(fov_it != jobj.end(), "No FOV specified for pinhole perspective camera.");
 
@@ -25,7 +26,12 @@ CameraPtr load_pinhole_perspective_camera_from_json(const nlohmann::json& jobj) 
     auto far_z_it = jobj.find("far_z");
     CHECK_AND_THROW_ERROR(far_z_it != jobj.end(), "No far Z plane specified for pinhole perspective camera.");
 
-    return camera;
+    return std::make_shared<PinholePerspectiveCamera>(
+        Angle::from_degrees(*fov_it),
+        *ar_it,
+        Distance::from_mm(*focal_length_it),
+        Distance::from_m(*near_z_it),
+        Distance::from_m(*far_z_it));
 }
 
 }
