@@ -12,6 +12,11 @@ constexpr double epsilon = 1e-4;
 
 }
 
+BOOST_AUTO_TEST_CASE(TestSizeOf)
+{
+    BOOST_CHECK_EQUAL(sizeof(cpt::Angle), sizeof(float));
+}
+
 BOOST_AUTO_TEST_CASE(TestConstructorFromDegrees)
 {
     {

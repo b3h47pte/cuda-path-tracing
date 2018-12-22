@@ -17,6 +17,12 @@ public:
         const Distance& near_z,
         const Distance& far_z);
 
+    const Angle& horizontal_fov() const { return _horizontal_fov; }
+    float film_aspect_ratio() const { return _film_aspect_ratio; }
+    const Distance& focal_length() const { return _focal_length; }
+    const Distance& near_z() const { return _near_z; }
+    const Distance& far_z() const { return _far_z; }
+
 private:
     Angle _horizontal_fov;
     float _film_aspect_ratio;
