@@ -80,8 +80,7 @@ void load_json_scene_object_hierarchy(const bfs::path& base_path, const nlohmann
 
 }
 
-ScenePtr load_scene_from_json(const nlohmann::json& jobj, const std::string& base_dir)
-{
+ScenePtr load_scene_from_json(const nlohmann::json& jobj, const std::string& base_dir) {
     CHECK_AND_THROW_ERROR(bfs::exists(base_dir), "Base directory does not exist [" << base_dir << "].");
     const bfs::path base_path(base_dir);
     SceneBuilder builder;
@@ -94,7 +93,8 @@ ScenePtr load_scene_from_json(const nlohmann::json& jobj, const std::string& bas
 
 ScenePtr SceneBuilder::construct() {
     auto scene = std::make_shared<Scene>(
-        std::move(_geometry));
+        std::move(_geometry),
+        std::move(_cameras));
     return scene;
 }
 

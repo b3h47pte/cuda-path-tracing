@@ -92,3 +92,26 @@ cpt::GeometryPtr construct_test_plane() {
         Eigen::Vector3i(2, 1, 3));
     return builder.construct();
 }
+
+void check_pinhole_perspective_camera_equal(
+    const cpt::PinholePerspectiveCameraPtr& cam1,
+    const cpt::PinholePerspectiveCameraPtr& cam2,
+    double epsilon) {
+    BOOST_CHECK(cam1 != nullptr);
+    BOOST_CHECK(cam2 != nullptr);
+
+    BOOST_CHECK_CLOSE(cam1->horizontal_fov().degrees(), cam2->horizontal_fov().degrees(), epsilon);
+    BOOST_CHECK_CLOSE(cam1->film_aspect_ratio(), cam2->film_aspect_ratio(), epsilon);
+    BOOST_CHECK_CLOSE(cam1->focal_length().meters(), cam2->focal_length().meters(), epsilon);
+    BOOST_CHECK_CLOSE(cam1->near_z().meters(), cam2->near_z().meters(), epsilon);
+    BOOST_CHECK_CLOSE(cam1->far_z().meters(), cam2->far_z().meters(), epsilon);
+}
+
+void check_transforms_equal(
+    const cpt::Transform& xform1,
+    const cpt::Transform& xform2,
+    double epsilon) {
+    BOOST_CHECK((xform1.translation() - xform2.translation()).isZero(epsilon));
+    BOOST_CHECK((xform1.rotation() * xform1.scale().asDiagonal() 
+        - xform2.rotation() * xform2.scale().asDiagonal()).isZero(epsilon));
+}
