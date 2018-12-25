@@ -3,15 +3,11 @@
 #include <json/json.hpp>
 #include "test_common.h"
 
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE CameraLoaderTest
-#include <boost/test/unit_test.hpp>
-
 namespace {
 constexpr double epsilon = 1e-6;
 }
 
-BOOST_AUTO_TEST_CASE(TestLoadNoType)
+TEST(CameraLoader,TestLoadNoType)
 {
     std::string test_string = R"(
 { 
@@ -19,10 +15,10 @@ BOOST_AUTO_TEST_CASE(TestLoadNoType)
 
     cpt::CameraLoader loader;
     auto jobj = nlohmann::json::parse(test_string);
-    BOOST_CHECK_THROW(loader.load_camera_from_json(jobj), std::runtime_error);
+    EXPECT_THROW(loader.load_camera_from_json(jobj), std::runtime_error);
 }
 
-BOOST_AUTO_TEST_CASE(TestLoadUnsupportedType)
+TEST(CameraLoader,TestLoadUnsupportedType)
 {
     std::string test_string = R"(
 { 
@@ -31,10 +27,10 @@ BOOST_AUTO_TEST_CASE(TestLoadUnsupportedType)
 
     cpt::CameraLoader loader;
     auto jobj = nlohmann::json::parse(test_string);
-    BOOST_CHECK_THROW(loader.load_camera_from_json(jobj), std::runtime_error);
+    EXPECT_THROW(loader.load_camera_from_json(jobj), std::runtime_error);
 }
 
-BOOST_AUTO_TEST_CASE(TestLoadIncompletePinholePerspective)
+TEST(CameraLoader,TestLoadIncompletePinholePerspective)
 {
     std::string test_string = R"(
 { 
@@ -57,12 +53,12 @@ BOOST_AUTO_TEST_CASE(TestLoadIncompletePinholePerspective)
     for(const auto& req: required) {
         auto jobj = nlohmann::json::parse(test_string);
         jobj.erase(jobj.find(req));
-        BOOST_CHECK_THROW(loader.load_camera_from_json(jobj), std::runtime_error);
+        EXPECT_THROW(loader.load_camera_from_json(jobj), std::runtime_error);
     }
 
 }
 
-BOOST_AUTO_TEST_CASE(TestLoadPinholePerspective)
+TEST(CameraLoader,TestLoadPinholePerspective)
 {
     std::string test_string = R"(
 { 
@@ -77,10 +73,12 @@ BOOST_AUTO_TEST_CASE(TestLoadPinholePerspective)
     cpt::CameraLoader loader;
     auto cam = loader.load_camera_from_json(jobj);
     auto pinhole = std::dynamic_pointer_cast<cpt::PinholePerspectiveCamera>(cam);
-    BOOST_CHECK(pinhole != nullptr);
-    BOOST_CHECK_CLOSE(pinhole->horizontal_fov().degrees(), 90.f, epsilon);
-    BOOST_CHECK_CLOSE(pinhole->film_aspect_ratio(), 1.5f, epsilon);
-    BOOST_CHECK_CLOSE(pinhole->focal_length().millimeters(), 60.0f, epsilon);
-    BOOST_CHECK_CLOSE(pinhole->near_z().meters(), 0.1f, epsilon);
-    BOOST_CHECK_CLOSE(pinhole->far_z().meters(), 1000.f, epsilon);
+    EXPECT_TRUE(pinhole != nullptr);
+    EXPECT_NEAR(pinhole->horizontal_fov().degrees(), 90.f, epsilon);
+    EXPECT_NEAR(pinhole->film_aspect_ratio(), 1.5f, epsilon);
+    EXPECT_NEAR(pinhole->focal_length().millimeters(), 60.0f, epsilon);
+    EXPECT_NEAR(pinhole->near_z().meters(), 0.1f, epsilon);
+    EXPECT_NEAR(pinhole->far_z().meters(), 1000.f, epsilon);
 }
+
+CREATE_GENERIC_TEST_MAIN

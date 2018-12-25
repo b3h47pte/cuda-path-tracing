@@ -4,11 +4,7 @@
 #include <json/json.hpp>
 #include "test_common.h"
 
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE XformLoaderTest
-#include <boost/test/unit_test.hpp>
-
-BOOST_AUTO_TEST_CASE(TestLoadEmpty)
+TEST(XformLoader,TestLoadEmpty)
 {
     std::string test_string = R"(
 { 
@@ -16,12 +12,12 @@ BOOST_AUTO_TEST_CASE(TestLoadEmpty)
     cpt::XformLoader loader;
     auto jobj = nlohmann::json::parse(test_string);
     auto xform = loader.load_xform_from_json(jobj);
-    BOOST_CHECK(xform.translation().isZero());
-    BOOST_CHECK(xform.scale().isOnes());
-    BOOST_CHECK(xform.rotation().isIdentity());
+    EXPECT_TRUE(xform.translation().isZero());
+    EXPECT_TRUE(xform.scale().isOnes());
+    EXPECT_TRUE(xform.rotation().isIdentity());
 }
 
-BOOST_AUTO_TEST_CASE(TestLoadTranslation)
+TEST(XformLoader,TestLoadTranslation)
 {
     std::string test_string = R"(
 { 
@@ -30,12 +26,12 @@ BOOST_AUTO_TEST_CASE(TestLoadTranslation)
     cpt::XformLoader loader;
     auto jobj = nlohmann::json::parse(test_string);
     auto xform = loader.load_xform_from_json(jobj);
-    BOOST_CHECK(xform.translation().isApprox(Eigen::Vector3f(3.f, -2.f, 1.5f)));
-    BOOST_CHECK(xform.scale().isOnes());
-    BOOST_CHECK(xform.rotation().isIdentity());
+    EXPECT_TRUE(xform.translation().isApprox(Eigen::Vector3f(3.f, -2.f, 1.5f)));
+    EXPECT_TRUE(xform.scale().isOnes());
+    EXPECT_TRUE(xform.rotation().isIdentity());
 }
 
-BOOST_AUTO_TEST_CASE(TestLoadScale)
+TEST(XformLoader,TestLoadScale)
 {
     std::string test_string = R"(
 { 
@@ -44,12 +40,12 @@ BOOST_AUTO_TEST_CASE(TestLoadScale)
     cpt::XformLoader loader;
     auto jobj = nlohmann::json::parse(test_string);
     auto xform = loader.load_xform_from_json(jobj);
-    BOOST_CHECK(xform.translation().isZero());
-    BOOST_CHECK(xform.scale().isApprox(Eigen::Vector3f(3.f, -2.f, 1.5f)));
-    BOOST_CHECK(xform.rotation().isIdentity());
+    EXPECT_TRUE(xform.translation().isZero());
+    EXPECT_TRUE(xform.scale().isApprox(Eigen::Vector3f(3.f, -2.f, 1.5f)));
+    EXPECT_TRUE(xform.rotation().isIdentity());
 }
 
-BOOST_AUTO_TEST_CASE(TestLoadRotationNoType)
+TEST(XformLoader,TestLoadRotationNoType)
 {
     std::string test_string = R"(
 { 
@@ -57,10 +53,10 @@ BOOST_AUTO_TEST_CASE(TestLoadRotationNoType)
 })";
     cpt::XformLoader loader;
     auto jobj = nlohmann::json::parse(test_string);
-    BOOST_CHECK_THROW(loader.load_xform_from_json(jobj), std::runtime_error);
+    EXPECT_THROW(loader.load_xform_from_json(jobj), std::runtime_error);
 }
 
-BOOST_AUTO_TEST_CASE(TestLoadRotationUnsupportedType)
+TEST(XformLoader,TestLoadRotationUnsupportedType)
 {
     std::string test_string = R"(
 { 
@@ -69,10 +65,10 @@ BOOST_AUTO_TEST_CASE(TestLoadRotationUnsupportedType)
 })";
     cpt::XformLoader loader;
     auto jobj = nlohmann::json::parse(test_string);
-    BOOST_CHECK_THROW(loader.load_xform_from_json(jobj), std::runtime_error);
+    EXPECT_THROW(loader.load_xform_from_json(jobj), std::runtime_error);
 }
 
-BOOST_AUTO_TEST_CASE(TestLoadRotationEulerXYZ)
+TEST(XformLoader,TestLoadRotationEulerXYZ)
 {
     std::string test_string = R"(
 { 
@@ -82,14 +78,14 @@ BOOST_AUTO_TEST_CASE(TestLoadRotationEulerXYZ)
     cpt::XformLoader loader;
     auto jobj = nlohmann::json::parse(test_string);
     auto xform = loader.load_xform_from_json(jobj);
-    BOOST_CHECK(xform.rotation().isApprox(cpt::get_euler_xyz_rotation_matrix(
+    EXPECT_TRUE(xform.rotation().isApprox(cpt::get_euler_xyz_rotation_matrix(
         Eigen::Vector3f(
             cpt::Angle::from_degrees(3.f).radians(),
             cpt::Angle::from_degrees(-2.f).radians(),
             cpt::Angle::from_degrees(1.5f).radians()))));
 }
 
-BOOST_AUTO_TEST_CASE(TestLoadAll)
+TEST(XformLoader,TestLoadAll)
 {
     std::string test_string = R"(
 { 
@@ -101,12 +97,14 @@ BOOST_AUTO_TEST_CASE(TestLoadAll)
     cpt::XformLoader loader;
     auto jobj = nlohmann::json::parse(test_string);
     auto xform = loader.load_xform_from_json(jobj);
-    BOOST_CHECK(xform.translation().isApprox(Eigen::Vector3f(1.f, -2.2f, 1.1f)));
-    BOOST_CHECK(xform.scale().isApprox(Eigen::Vector3f(0.2f, -1.f, 5.5f)));
-    BOOST_CHECK(xform.rotation().isApprox(cpt::get_euler_xyz_rotation_matrix(
+    EXPECT_TRUE(xform.translation().isApprox(Eigen::Vector3f(1.f, -2.2f, 1.1f)));
+    EXPECT_TRUE(xform.scale().isApprox(Eigen::Vector3f(0.2f, -1.f, 5.5f)));
+    EXPECT_TRUE(xform.rotation().isApprox(cpt::get_euler_xyz_rotation_matrix(
         Eigen::Vector3f(
             cpt::Angle::from_degrees(3.f).radians(),
             cpt::Angle::from_degrees(-2.f).radians(),
             cpt::Angle::from_degrees(1.5f).radians()))));
 
 }
+
+CREATE_GENERIC_TEST_MAIN

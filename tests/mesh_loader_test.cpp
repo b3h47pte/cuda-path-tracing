@@ -3,24 +3,20 @@
 #include <scene/geometry/triangle.h>
 #include "test_common.h"
 
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE MeshLoaderTest
-#include <boost/test/unit_test.hpp>
-
 namespace {
 
 }
 
-BOOST_AUTO_TEST_CASE(TestLoadMeshDispatch) {
+TEST(MeshLoader,TestLoadMeshDispatch) {
     cpt::MeshLoader loader;
 
     // File must exist.
-    BOOST_CHECK_THROW(loader.load_mesh_from_file("data/_does_not_exist.obj"), std::runtime_error);
+    EXPECT_THROW(loader.load_mesh_from_file("data/_does_not_exist.obj"), std::runtime_error);
 
     // We must support the file type.
-    BOOST_CHECK_THROW(loader.load_mesh_from_file("data/support.abc"), std::runtime_error);
-    BOOST_CHECK_THROW(loader.load_mesh_from_file("data/support.fbx"), std::runtime_error);
-    BOOST_CHECK_THROW(loader.load_mesh_from_file("data/support.ply"), std::runtime_error);
+    EXPECT_THROW(loader.load_mesh_from_file("data/support.abc"), std::runtime_error);
+    EXPECT_THROW(loader.load_mesh_from_file("data/support.fbx"), std::runtime_error);
+    EXPECT_THROW(loader.load_mesh_from_file("data/support.ply"), std::runtime_error);
 
     // We must be robust to capitilization for extension detection.
     // Check that we can successfully load/dispatch in the presence of non-lowercase.
@@ -28,20 +24,20 @@ BOOST_AUTO_TEST_CASE(TestLoadMeshDispatch) {
     check_test_plane(loader.load_mesh_from_file("data/plane.OBJ"));
 }
 
-BOOST_AUTO_TEST_CASE(TestLoadObj) {
+TEST(MeshLoader,TestLoadObj) {
     cpt::MeshLoader loader;
     // Ensure that calling the load obj function directly also succeeds.
     check_test_plane(loader.load_obj_from_file("data/plane.obj"));
 }
 
-BOOST_AUTO_TEST_CASE(TestGeometryAggregateBuilder) {
+TEST(MeshLoader,TestGeometryAggregateBuilder) {
     // Test empty.
     {
         cpt::GeometryAggregateBuilder builder;
         auto geom = builder.construct();
         cpt::GeometryAggregate* agg = dynamic_cast<cpt::GeometryAggregate*>(geom.get());
-        BOOST_CHECK(agg != nullptr);
-        BOOST_CHECK_EQUAL(agg->num_children(), 0);
+        EXPECT_TRUE(agg != nullptr);
+        EXPECT_EQ(agg->num_children(), 0);
     }
 
     // Test creating the standard plane.
@@ -71,6 +67,8 @@ BOOST_AUTO_TEST_CASE(TestGeometryAggregateBuilder) {
             Eigen::Vector3i(0, 1, 2),
             Eigen::Vector3i(0, 1, 2),
             Eigen::Vector3i(0, 1, 2));
-        BOOST_CHECK_THROW(builder.construct(), std::runtime_error);
+        EXPECT_THROW(builder.construct(), std::runtime_error);
     }
 }
+
+CREATE_GENERIC_TEST_MAIN

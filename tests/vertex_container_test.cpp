@@ -1,43 +1,41 @@
 #include <scene/geometry/vertex_container.h>
 #include "test_common.h"
 
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE VertexContainerTest
-#include <boost/test/unit_test.hpp>
-
-BOOST_AUTO_TEST_CASE(TestConstructor)
+TEST(VertexContainer,TestConstructor)
 {
     // What you pass in is what you get.
     {
         cpt::VertexContainer container(ref_positions, ref_uvs, ref_normals);
-        BOOST_CHECK((container.positions - ref_positions).isZero());
-        BOOST_CHECK((container.uvs - ref_uvs).isZero());
-        BOOST_CHECK((container.normals - ref_normals).isZero());
+        EXPECT_TRUE((container.positions - ref_positions).isZero());
+        EXPECT_TRUE((container.uvs - ref_uvs).isZero());
+        EXPECT_TRUE((container.normals - ref_normals).isZero());
     }
 
     // Pass in nothing, get nothing back.
     {
         cpt::VertexContainer container;
-        BOOST_CHECK_EQUAL(container.positions.size(), 0);
-        BOOST_CHECK_EQUAL(container.uvs.size(), 0);
-        BOOST_CHECK_EQUAL(container.normals.size(), 0);
+        EXPECT_EQ(container.positions.size(), 0);
+        EXPECT_EQ(container.uvs.size(), 0);
+        EXPECT_EQ(container.normals.size(), 0);
     }
 }
 
-BOOST_AUTO_TEST_CASE(TestNumPositions)
+TEST(VertexContainer,TestNumPositions)
 {
     cpt::VertexContainer container(ref_positions, ref_uvs, ref_normals);
-    BOOST_CHECK_EQUAL(container.num_positions(), 4);
+    EXPECT_EQ(container.num_positions(), 4);
 }
 
-BOOST_AUTO_TEST_CASE(TestNumUVs)
+TEST(VertexContainer,TestNumUVs)
 {
     cpt::VertexContainer container(ref_positions, ref_uvs, ref_normals);
-    BOOST_CHECK_EQUAL(container.num_uvs(), 4);
+    EXPECT_EQ(container.num_uvs(), 4);
 }
 
-BOOST_AUTO_TEST_CASE(TestNumNormals)
+TEST(VertexContainer,TestNumNormals)
 {
     cpt::VertexContainer container(ref_positions, ref_uvs, ref_normals);
-    BOOST_CHECK_EQUAL(container.num_normals(), 4);
+    EXPECT_EQ(container.num_normals(), 4);
 }
+
+CREATE_GENERIC_TEST_MAIN
