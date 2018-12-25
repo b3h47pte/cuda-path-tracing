@@ -1,18 +1,33 @@
+#include <gtest/gtest.h>
 #include <json/json.hpp>
 #include <scene/loader/camera_loader.h>
 #include <scene/loader/scene_loader.h>
 #include <math/rotation.h>
+#include "mocks/camera_loader_mock.h"
+#include "mocks/mesh_loader_mock.h"
+#include "mocks/scene_builder_mock.h"
+#include "mocks/scene_loader_mock.h"
+#include "mocks/xform_loader_mock.h"
 #include "test_common.h"
 
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE SceneLoaderTest
-#include <boost/test/unit_test.hpp>
+using ::testing::AtLeast;
+using ::testing::InSequence;
 
 namespace {
 constexpr double epsilon = 1e-6;
+
+cpt::SceneLoader::SceneLoaderDependencies create_full_mock_dependencies() {
+    cpt::SceneLoader::SceneLoaderDependencies deps;
+    deps.camera_loader = std::make_shared<MockCameraLoader>();
+    deps.mesh_loader = std::make_shared<MockMeshLoader>();
+    deps.scene_builder = std::make_shared<MockSceneBuilder>();
+    deps.xform_loader = std::make_shared<MockXformLoader>();
+    return deps;
 }
 
-BOOST_AUTO_TEST_CASE(TestSceneBuilder)
+}
+
+TEST(SceneBuilder,AddGeometry)
 {
     // Construct reference geometry.
     auto p1 = construct_test_plane();
@@ -25,144 +40,262 @@ BOOST_AUTO_TEST_CASE(TestSceneBuilder)
         builder.add_geometry(p2);
 
         auto scene = builder.construct();
-        BOOST_CHECK_EQUAL(scene->num_geometry(), 2);
-        BOOST_CHECK_EQUAL(scene->geometry(0).get(), p1.get());
-        BOOST_CHECK_EQUAL(scene->geometry(1).get(), p2.get());
+        EXPECT_EQ(scene->num_geometry(), 2);
+        EXPECT_EQ(scene->geometry(0).get(), p1.get());
+        EXPECT_EQ(scene->geometry(1).get(), p2.get());
     }
 }
 
-// TODO: Somehow split the testing of the parsing of the scene JSON from
-//       the testing of the separate load_*_from_json functions and from
-//       the testing of the SceneBuilder. Will probably need to restructure
-//       this API to use dependency injection.
+TEST(SceneBuilder,AddCamera)
+{
+    auto cam = std::make_shared<TestCamera>();
+    cpt::SceneBuilder builder;
+    builder.add_camera("cam0", cam);
+    // Can't add camera with the same name.
+    EXPECT_THROW(builder.add_camera("cam0", cam), std::runtime_error);
 
-BOOST_AUTO_TEST_CASE(TestLoadSceneFromJsonIgnoreRoot)
+    auto scene = builder.construct();
+    EXPECT_EQ(scene->num_cameras(), 1);
+    EXPECT_TRUE(scene->has_camera("cam0"));
+    EXPECT_EQ(scene->camera("cam0").get(), cam.get());
+}
+
+TEST(SceneBuilder,PushPopTransforms)
+{
+    cpt::SceneBuilder builder;
+    check_transforms_equal(builder.current_transform(), cpt::Transform(), epsilon);
+
+    cpt::Transform ref_xform;
+    ref_xform.set_translation(Eigen::Vector3f(1.f, -2.2f, 1.1f));
+    ref_xform.set_scale(Eigen::Vector3f(0.2f, -1.f, 5.5f));
+    ref_xform.set_rotation(cpt::get_euler_xyz_rotation_matrix(
+        Eigen::Vector3f(
+            cpt::Angle::from_degrees(3.f).radians(),
+            cpt::Angle::from_degrees(-2.f).radians(),
+            cpt::Angle::from_degrees(1.5f).radians())));
+    builder.push_transform(ref_xform);
+    check_transforms_equal(builder.current_transform(), ref_xform, epsilon);
+    builder.pop_transform();
+    check_transforms_equal(builder.current_transform(), cpt::Transform(), epsilon);
+    builder.push_transform(ref_xform);
+    check_transforms_equal(builder.current_transform(), ref_xform, epsilon);
+
+    cpt::Transform ref_xform2;
+    ref_xform2.set_translation(Eigen::Vector3f(-1.f, 2.2f, -1.1f));
+    ref_xform2.set_scale(Eigen::Vector3f::Constant(0.5f));
+    ref_xform2.set_rotation(cpt::get_euler_xyz_rotation_matrix(
+        Eigen::Vector3f(
+            cpt::Angle::from_degrees(1.f).radians(),
+            cpt::Angle::from_degrees(2.f).radians(),
+            cpt::Angle::from_degrees(3.f).radians())));
+    builder.push_transform(ref_xform2);
+    check_transforms_equal(builder.current_transform(), ref_xform * ref_xform2, epsilon);
+}
+
+TEST(SceneBuilder,AddGeometryXform)
+{
+    cpt::SceneBuilder builder;
+
+    cpt::Transform ref_xform;
+    ref_xform.set_translation(Eigen::Vector3f(1.f, -2.2f, 1.1f));
+    ref_xform.set_scale(Eigen::Vector3f(0.2f, -1.f, 5.5f));
+    ref_xform.set_rotation(cpt::get_euler_xyz_rotation_matrix(
+        Eigen::Vector3f(
+            cpt::Angle::from_degrees(3.f).radians(),
+            cpt::Angle::from_degrees(-2.f).radians(),
+            cpt::Angle::from_degrees(1.5f).radians())));
+    builder.push_transform(ref_xform);
+
+    auto cam = std::make_shared<TestCamera>();
+    builder.add_camera("cam0", cam);
+    
+    auto scene = builder.construct();
+    check_transforms_equal(scene->camera("cam0")->object_to_world_xform(), ref_xform, epsilon);
+}
+
+TEST(SceneBuilder,AddCameraXform)
+{
+    cpt::SceneBuilder builder;
+
+    cpt::Transform ref_xform;
+    ref_xform.set_translation(Eigen::Vector3f(1.f, -2.2f, 1.1f));
+    ref_xform.set_scale(Eigen::Vector3f(0.2f, -1.f, 5.5f));
+    ref_xform.set_rotation(cpt::get_euler_xyz_rotation_matrix(
+        Eigen::Vector3f(
+            cpt::Angle::from_degrees(3.f).radians(),
+            cpt::Angle::from_degrees(-2.f).radians(),
+            cpt::Angle::from_degrees(1.5f).radians())));
+    builder.push_transform(ref_xform);
+
+    auto p1 = construct_test_plane();
+    builder.add_geometry(p1);
+    
+    auto scene = builder.construct();
+    check_transforms_equal(scene->geometry(0)->object_to_world_xform(), ref_xform, epsilon);
+
+}
+
+TEST(SceneLoader,LoadSceneFromJsonIgnoreRoot)
 {
     // Ensure that default loading of a single
     // mesh works and that the root object is successfully ignored.
-    {
-        std::string test_string = R"(
+    std::string test_string = R"(
 {
-    "type": "root",
-    "children": [
-        {
-            "type": "mesh",
-            "filename": "plane.obj"
-        }
-    ]
-})";
-        auto jobj = nlohmann::json::parse(test_string);
-        auto scene = cpt::load_scene_from_json(jobj, "data/");
-        BOOST_CHECK_EQUAL(scene->num_geometry(), 1);
-        check_test_plane(scene->geometry(0));
+"type": "root",
+"children": [
+    {
+        "type": "mesh",
+        "filename": "plane.obj"
     }
+]
+})";
+    
+    auto deps = create_full_mock_dependencies();
+    cpt::SceneLoader loader(deps);
+    auto jobj = nlohmann::json::parse(test_string);
+    
+    {
+        InSequence tmp;
+        EXPECT_CALL(
+            dynamic_cast<MockMeshLoader&>(*deps.mesh_loader),
+            load_mesh_from_file).Times(1);
+        EXPECT_CALL(
+            dynamic_cast<MockSceneBuilder&>(*deps.scene_builder),
+            add_geometry).Times(1);
+    }
+
+    loader.load_scene_from_json(jobj, "data/");
 }
 
-BOOST_AUTO_TEST_CASE(TestLoadSceneFromJsonNoRoot)
+TEST(SceneLoader,TestLoadSceneFromJsonNoRoot)
 {
     // Ensure that the root object is not actually needed.
-    {
-        std::string test_string = R"(
+    std::string test_string = R"(
 {
-    "type": "mesh",
-    "filename": "plane.obj"
+"type": "mesh",
+"filename": "plane.obj"
 }
 )";
-        auto jobj = nlohmann::json::parse(test_string);
-        auto scene = cpt::load_scene_from_json(jobj, "data/");
-        BOOST_CHECK_EQUAL(scene->num_geometry(), 1);
-        check_test_plane(scene->geometry(0));
+    auto jobj = nlohmann::json::parse(test_string);
+    auto deps = create_full_mock_dependencies();
+    cpt::SceneLoader loader(deps);
+
+    {
+        InSequence tmp;
+        EXPECT_CALL(
+            dynamic_cast<MockMeshLoader&>(*deps.mesh_loader),
+            load_mesh_from_file).Times(1);
+        EXPECT_CALL(
+            dynamic_cast<MockSceneBuilder&>(*deps.scene_builder),
+            add_geometry).Times(1);
     }
+
+    loader.load_scene_from_json(jobj, "data/");
+
 }
 
-BOOST_AUTO_TEST_CASE(TestLoadSceneFromJsonUnknownType)
+TEST(SceneLoader,TestLoadSceneFromJsonUnknownType)
 {
     // Check to make sure an object of unknown type throws an error.
-    {
-        std::string test_string = R"(
+    std::string test_string = R"(
 {
     "type": "THIS_SHOULD_THROW_AN_ERROR"
 }
 )";
-        auto jobj = nlohmann::json::parse(test_string);
-        BOOST_CHECK_THROW(cpt::load_scene_from_json(jobj, "data/"), std::runtime_error);
-    }
+    auto jobj = nlohmann::json::parse(test_string);
+    cpt::SceneLoader loader;
+    EXPECT_THROW(loader.load_scene_from_json(jobj, "data/"), std::runtime_error);
 }
 
-BOOST_AUTO_TEST_CASE(TestLoadSceneFromJsonTypeless)
+TEST(SceneLoader,TestLoadSceneFromJsonTypeless)
 {
     // Typeless entry should throw an error.
-    {
-        std::string test_string = R"(
+    std::string test_string = R"(
 {
-    "type": "root",
-    "children": [
-        {
-            "filename": "plane.obj"
-        }
-    ]
+"type": "root",
+"children": [
+    {
+        "filename": "plane.obj"
+    }
+]
 }
 )";
-        auto jobj = nlohmann::json::parse(test_string);
-        BOOST_CHECK_THROW(cpt::load_scene_from_json(jobj, "data/"), std::runtime_error);
-    }
+    auto jobj = nlohmann::json::parse(test_string);
+    cpt::SceneLoader loader;
+    EXPECT_THROW(loader.load_scene_from_json(jobj, "data/"), std::runtime_error);
 }
 
-BOOST_AUTO_TEST_CASE(TestLoadSceneFromJsonNestedGeometry)
+TEST(SceneLoader,TestLoadSceneFromJsonNestedGeometry)
 {
     // Ensure that nested children works.
-    {
-        std::string test_string = R"(
+    std::string test_string = R"(
 {
-    "type": "root",
-    "children": [
-        {
-            "type": "mesh",
-            "filename": "plane.obj"
-        },
-        {
-            "type": "mesh",
-            "filename": "plane.obj",
-            "children": [
-                {
-                    "type": "mesh",
-                    "filename": "plane.obj"
-                }
-            ]
-        }
-    ]
+"type": "root",
+"children": [
+    {
+        "type": "mesh",
+        "filename": "plane.obj"
+    },
+    {
+        "type": "mesh",
+        "filename": "plane.obj",
+        "children": [
+            {
+                "type": "mesh",
+                "filename": "plane.obj"
+            }
+        ]
+    }
+]
 }
 )";
-        auto jobj = nlohmann::json::parse(test_string);
-        auto scene = cpt::load_scene_from_json(jobj, "data/");
-
-        BOOST_CHECK_EQUAL(scene->num_geometry(), 3);
-        check_test_plane(scene->geometry(0));
-        check_test_plane(scene->geometry(1));
-        check_test_plane(scene->geometry(2));
+    auto jobj = nlohmann::json::parse(test_string);
+    auto deps = create_full_mock_dependencies();
+    cpt::SceneLoader loader(deps);
+    {
+        InSequence tmp;
+        EXPECT_CALL(
+            dynamic_cast<MockMeshLoader&>(*deps.mesh_loader),
+            load_mesh_from_file).Times(1).RetiresOnSaturation();
+        EXPECT_CALL(
+            dynamic_cast<MockSceneBuilder&>(*deps.scene_builder),
+            add_geometry).Times(1).RetiresOnSaturation();
+        EXPECT_CALL(
+            dynamic_cast<MockMeshLoader&>(*deps.mesh_loader),
+            load_mesh_from_file).Times(1).RetiresOnSaturation();
+        EXPECT_CALL(
+            dynamic_cast<MockSceneBuilder&>(*deps.scene_builder),
+            add_geometry).Times(1).RetiresOnSaturation();
+        EXPECT_CALL(
+            dynamic_cast<MockMeshLoader&>(*deps.mesh_loader),
+            load_mesh_from_file).Times(1).RetiresOnSaturation();
+        EXPECT_CALL(
+            dynamic_cast<MockSceneBuilder&>(*deps.scene_builder),
+            add_geometry).Times(1).RetiresOnSaturation();
     }
+
+    loader.load_scene_from_json(jobj, "data/");
 }
 
-BOOST_AUTO_TEST_CASE(TestLoadSceneFromJsonMeshFilename)
+TEST(SceneLoader,TestLoadSceneFromJsonMeshFilename)
 {
     // Ensure that a "mesh" object requires a filename.
-    {
-        std::string test_string = R"(
+    std::string test_string = R"(
 {
-    "type": "root",
-    "children": [
-        {
-            "type": "mesh"
-        }
-    ]
+"type": "root",
+"children": [
+    {
+        "type": "mesh"
+    }
+]
 }
 )";
-        auto jobj = nlohmann::json::parse(test_string);
-        BOOST_CHECK_THROW(cpt::load_scene_from_json(jobj, "data/"), std::runtime_error);
-    }
+    auto jobj = nlohmann::json::parse(test_string);
+    cpt::SceneLoader loader;
+    EXPECT_THROW(loader.load_scene_from_json(jobj, "data/"), std::runtime_error);
 }
 
-BOOST_AUTO_TEST_CASE(TestLoadSceneFromJsonCameraNoId)
+TEST(SceneLoader,TestLoadSceneFromJsonCameraNoId)
 {
     std::string test_string = R"(
 {
@@ -178,10 +311,11 @@ BOOST_AUTO_TEST_CASE(TestLoadSceneFromJsonCameraNoId)
 }
 )";
     auto jobj = nlohmann::json::parse(test_string);
-    BOOST_CHECK_THROW(cpt::load_scene_from_json(jobj, "data/"), std::runtime_error);
+    cpt::SceneLoader loader;
+    EXPECT_THROW(loader.load_scene_from_json(jobj, "data/"), std::runtime_error);
 }
 
-BOOST_AUTO_TEST_CASE(TestLoadSceneFromJsonCameraNoObject)
+TEST(SceneLoader,TestLoadSceneFromJsonCameraNoObject)
 {
     std::string test_string = R"(
 {
@@ -190,10 +324,11 @@ BOOST_AUTO_TEST_CASE(TestLoadSceneFromJsonCameraNoObject)
 }
 )";
     auto jobj = nlohmann::json::parse(test_string);
-    BOOST_CHECK_THROW(cpt::load_scene_from_json(jobj, "data/"), std::runtime_error);
+    cpt::SceneLoader loader;
+    EXPECT_THROW(loader.load_scene_from_json(jobj, "data/"), std::runtime_error);
 }
 
-BOOST_AUTO_TEST_CASE(TestLoadSceneFromJsonCamera)
+TEST(SceneLoader,TestLoadSceneFromJsonCamera)
 {
     std::string test_string = R"(
 {
@@ -210,21 +345,21 @@ BOOST_AUTO_TEST_CASE(TestLoadSceneFromJsonCamera)
 }
 )";
     auto jobj = nlohmann::json::parse(test_string);
-    auto scene = cpt::load_scene_from_json(jobj, "data/");
-    auto camera = cpt::load_camera_from_json(jobj["object"]);
-
-    // Ideally I would do some dependency injection to mock
-    // cpt::load_camera_from_json and just check if it's called.
-    BOOST_CHECK(scene->has_camera("cam0"));
-    BOOST_CHECK_EQUAL(scene->num_cameras(), 1);
-    auto test_camera = scene->camera("cam0");
-    check_pinhole_perspective_camera_equal(
-        std::dynamic_pointer_cast<cpt::PinholePerspectiveCamera>(camera),
-        std::dynamic_pointer_cast<cpt::PinholePerspectiveCamera>(test_camera),
-        epsilon);
+    auto deps = create_full_mock_dependencies();
+    cpt::SceneLoader loader(deps);
+    {
+        InSequence tmp;
+        EXPECT_CALL(
+            dynamic_cast<MockCameraLoader&>(*deps.camera_loader),
+            load_camera_from_json).Times(1);
+        EXPECT_CALL(
+            dynamic_cast<MockSceneBuilder&>(*deps.scene_builder),
+            add_camera).Times(1);
+    }
+    loader.load_scene_from_json(jobj, "data/");
 }
 
-BOOST_AUTO_TEST_CASE(TestLoadSceneFromJsonXformNoObject)
+TEST(SceneLoader,TestLoadSceneFromJsonXformNoObject)
 {
     std::string test_string = R"(
 {
@@ -232,19 +367,12 @@ BOOST_AUTO_TEST_CASE(TestLoadSceneFromJsonXformNoObject)
 }
 )";
     auto jobj = nlohmann::json::parse(test_string);
-    BOOST_CHECK_THROW(cpt::load_scene_from_json(jobj, "data/"), std::runtime_error);
+    cpt::SceneLoader loader;
+    EXPECT_THROW(loader.load_scene_from_json(jobj, "data/"), std::runtime_error);
 }
 
-BOOST_AUTO_TEST_CASE(TestLoadSceneXformIntoGeometry)
+TEST(SceneLoader,TestLoadSceneXformIntoGeometry)
 {
-    cpt::Transform ref_xform;
-    ref_xform.set_translation(Eigen::Vector3f(1.f, -2.2f, 1.1f));
-    ref_xform.set_scale(Eigen::Vector3f(0.2f, -1.f, 5.5f));
-    ref_xform.set_rotation(cpt::get_euler_xyz_rotation_matrix(
-        Eigen::Vector3f(
-            cpt::Angle::from_degrees(3.f).radians(),
-            cpt::Angle::from_degrees(-2.f).radians(),
-            cpt::Angle::from_degrees(1.5f).radians())));
     std::string test_string = R"(
 {
     "type": "xform",
@@ -263,31 +391,34 @@ BOOST_AUTO_TEST_CASE(TestLoadSceneXformIntoGeometry)
 }
 )";
     auto jobj = nlohmann::json::parse(test_string);
-    auto scene = cpt::load_scene_from_json(jobj, "data/");
-    BOOST_CHECK_EQUAL(scene->num_geometry(), 1);
-    check_transforms_equal(scene->geometry(0)->object_to_world_xform(), ref_xform, epsilon);
+
+    auto deps = create_full_mock_dependencies();
+    cpt::SceneLoader loader(deps);
+
+    {
+        InSequence tmp;
+        EXPECT_CALL(
+            dynamic_cast<MockXformLoader&>(*deps.xform_loader),
+            load_xform_from_json).Times(1);
+        EXPECT_CALL(
+            dynamic_cast<MockSceneBuilder&>(*deps.scene_builder),
+            push_transform).Times(1);
+        EXPECT_CALL(
+            dynamic_cast<MockMeshLoader&>(*deps.mesh_loader),
+            load_mesh_from_file).Times(1);
+        EXPECT_CALL(
+            dynamic_cast<MockSceneBuilder&>(*deps.scene_builder),
+            add_geometry).Times(1);
+        EXPECT_CALL(
+            dynamic_cast<MockSceneBuilder&>(*deps.scene_builder),
+            pop_transform).Times(1);
+    }
+
+    loader.load_scene_from_json(jobj, "data/");
 }
 
-BOOST_AUTO_TEST_CASE(TestLoadSceneXformNestedIntoGeometry)
+TEST(SceneLoader,TestLoadSceneXformNestedIntoGeometry)
 {
-    cpt::Transform ref_xform;
-    ref_xform.set_translation(Eigen::Vector3f(1.f, -2.2f, 1.1f));
-    ref_xform.set_scale(Eigen::Vector3f(0.2f, -1.f, 5.5f));
-    ref_xform.set_rotation(cpt::get_euler_xyz_rotation_matrix(
-        Eigen::Vector3f(
-            cpt::Angle::from_degrees(3.f).radians(),
-            cpt::Angle::from_degrees(-2.f).radians(),
-            cpt::Angle::from_degrees(1.5f).radians())));
-
-    cpt::Transform ref_xform2;
-    ref_xform2.set_translation(Eigen::Vector3f(-1.f, 2.2f, -1.1f));
-    ref_xform2.set_scale(Eigen::Vector3f::Constant(0.5f));
-    ref_xform2.set_rotation(cpt::get_euler_xyz_rotation_matrix(
-        Eigen::Vector3f(
-            cpt::Angle::from_degrees(1.f).radians(),
-            cpt::Angle::from_degrees(2.f).radians(),
-            cpt::Angle::from_degrees(3.f).radians())));
-
     std::string test_string = R"(
 {
     "type": "xform",
@@ -317,7 +448,35 @@ BOOST_AUTO_TEST_CASE(TestLoadSceneXformNestedIntoGeometry)
 }
 )";
     auto jobj = nlohmann::json::parse(test_string);
-    auto scene = cpt::load_scene_from_json(jobj, "data/");
-    BOOST_CHECK_EQUAL(scene->num_geometry(), 1);
-    check_transforms_equal(scene->geometry(0)->object_to_world_xform(), ref_xform * ref_xform2, epsilon);
+    auto deps = create_full_mock_dependencies();
+    cpt::SceneLoader loader(deps);
+
+    {
+        InSequence tmp;
+        EXPECT_CALL(
+            dynamic_cast<MockXformLoader&>(*deps.xform_loader),
+            load_xform_from_json).Times(1).RetiresOnSaturation();
+        EXPECT_CALL(
+            dynamic_cast<MockSceneBuilder&>(*deps.scene_builder),
+            push_transform).Times(1).RetiresOnSaturation();
+        EXPECT_CALL(
+            dynamic_cast<MockXformLoader&>(*deps.xform_loader),
+            load_xform_from_json).Times(1).RetiresOnSaturation();
+        EXPECT_CALL(
+            dynamic_cast<MockSceneBuilder&>(*deps.scene_builder),
+            push_transform).Times(1).RetiresOnSaturation();
+        EXPECT_CALL(
+            dynamic_cast<MockMeshLoader&>(*deps.mesh_loader),
+            load_mesh_from_file).Times(1).RetiresOnSaturation();
+        EXPECT_CALL(
+            dynamic_cast<MockSceneBuilder&>(*deps.scene_builder),
+            add_geometry).Times(1).RetiresOnSaturation();
+        EXPECT_CALL(
+            dynamic_cast<MockSceneBuilder&>(*deps.scene_builder),
+            pop_transform).Times(2).RetiresOnSaturation();
+    }
+
+    loader.load_scene_from_json(jobj, "data/");
 }
+
+CREATE_GENERIC_TEST_MAIN

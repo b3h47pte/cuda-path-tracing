@@ -25,7 +25,8 @@ int main(int argc, char** argv) {
     // Load scene.
     const std::string sceneFname = vm["scene"].as<std::string>();
     std::cout << "Loading Scene [" << sceneFname << "]..." << std::endl;
-    cpt::ScenePtr scene = cpt::load_scene_from_json(
+    cpt::SceneLoader loader;
+    cpt::ScenePtr scene = loader.load_scene_from_json(
         cpt::load_json_from_file(sceneFname),
         cpt::get_parent_directory(sceneFname));
 

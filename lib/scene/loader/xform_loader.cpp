@@ -23,7 +23,7 @@ Eigen::Matrix3f load_rotation_matrix_from_type(const std::string& type, const nl
 
 }
 
-Transform load_xform_from_json(const nlohmann::json& jobj) {
+Transform XformLoader::load_xform_from_json(const nlohmann::json& jobj) {
     Transform xform;
 
     auto translation_it = jobj.find("translation");

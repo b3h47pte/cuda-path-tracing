@@ -1,9 +1,14 @@
 #pragma once
 
+#include <boost/filesystem.hpp>
 #include <json/json.hpp>
 #include "math/transform.h"
+#include <memory>
 #include "scene/camera/camera.h"
 #include "scene/geometry/geometry.h"
+#include "scene/loader/camera_loader.h"
+#include "scene/loader/mesh_loader.h"
+#include "scene/loader/xform_loader.h"
 #include "scene/scene.h"
 #include <string>
 #include <unordered_map>
@@ -11,20 +16,20 @@
 
 namespace cpt {
 
-ScenePtr load_scene_from_json(const nlohmann::json& jobj, const std::string& base_dir);
-
 // Stateful SceneBuilder.
 class SceneBuilder
 {
 public:
-    ScenePtr construct();
+    virtual ~SceneBuilder() = default;
 
-    void add_geometry(const GeometryPtr& geometry);
-    void add_camera(const std::string& id, const CameraPtr& camera);
+    virtual ScenePtr construct();
+
+    virtual void add_geometry(const GeometryPtr& geometry);
+    virtual void add_camera(const std::string& id, const CameraPtr& camera);
 
     // Transform stack.
-    void push_transform(const Transform& xform);
-    void pop_transform();
+    virtual void push_transform(const Transform& xform);
+    virtual void pop_transform();
     const Transform& current_transform() const { return _current_xform; }
 
 private:
@@ -35,6 +40,35 @@ private:
     Transform _current_xform;
 
     void update_current_xform();
+};
+
+using SceneBuilderPtr = std::shared_ptr<SceneBuilder>;
+
+class SceneLoader
+{
+public:
+    struct SceneLoaderDependencies
+    {
+        SceneBuilderPtr scene_builder;
+        MeshLoaderPtr mesh_loader;
+        CameraLoaderPtr camera_loader;
+        XformLoaderPtr xform_loader;
+
+        SceneLoaderDependencies();
+    };
+
+    SceneLoader(const SceneLoaderDependencies& deps=SceneLoaderDependencies());
+    virtual ~SceneLoader() = default;
+
+    ScenePtr load_scene_from_json(const nlohmann::json& jobj, const std::string& base_dir);
+private:
+    SceneLoaderDependencies _deps;
+
+    virtual void load_json_mesh(const boost::filesystem::path& base_path, const nlohmann::json& jobj);
+    virtual void load_json_camera(const nlohmann::json& jobj);
+    virtual void load_json_xform(const nlohmann::json& jobj);
+    virtual void load_json_scene_object_hierarchy(const boost::filesystem::path& base_path, const nlohmann::json& jobj);
+    
 };
 
 }

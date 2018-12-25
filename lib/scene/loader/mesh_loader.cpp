@@ -17,7 +17,7 @@ const std::string OBJ_EXTENSION = ".obj";
 
 }
 
-GeometryPtr load_mesh_from_file(const std::string& fname) {
+GeometryPtr MeshLoader::load_mesh_from_file(const std::string& fname) {
     bfs::path fpath(fname);    
     CHECK_AND_THROW_ERROR(bfs::exists(fpath), "Mesh does not exist [" << fname << "].");
 
@@ -33,7 +33,7 @@ GeometryPtr load_mesh_from_file(const std::string& fname) {
     return nullptr;
 }
 
-GeometryPtr load_obj_from_file(const std::string& fname) {
+GeometryPtr MeshLoader::load_obj_from_file(const std::string& fname) {
     GeometryAggregateBuilder builder;
 
     const std::string base_path = bfs::path(fname).parent_path().native() + "/";

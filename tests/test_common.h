@@ -1,6 +1,8 @@
 #pragma once
 
 #include <Eigen/Core>
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include <math/transform.h>
 #include <scene/camera/pinhole_perspective_camera.h>
 #include <scene/geometry/geometry.h>
@@ -21,3 +23,13 @@ void check_transforms_equal(
     const cpt::Transform& xform2,
     double epsilon);
 cpt::GeometryPtr construct_test_plane();
+
+class TestCamera: public cpt::Camera
+{};
+
+#define CREATE_GENERIC_TEST_MAIN \
+int main(int argc, char** argv) {\
+    ::testing::InitGoogleTest(&argc, argv);\
+    ::testing::InitGoogleMock(&argc, argv);\
+    return RUN_ALL_TESTS();\
+}

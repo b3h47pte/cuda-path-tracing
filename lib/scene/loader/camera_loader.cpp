@@ -9,7 +9,22 @@ namespace {
 
 const std::string PINHOLE_PERSPECTIVE = "pinhole_perspective";
 
-CameraPtr load_pinhole_perspective_camera_from_json(const nlohmann::json& jobj) {
+}
+
+CameraPtr CameraLoader::load_camera_from_json(const nlohmann::json& jobj) {
+    auto type_it = jobj.find("type");
+    CHECK_AND_THROW_ERROR(type_it != jobj.end(), "No type specified for camera.");
+
+    if (*type_it == PINHOLE_PERSPECTIVE) {
+        return load_pinhole_perspective_camera_from_json(jobj);
+    } else {
+        THROW_ERROR("Invalid camera type: " << *type_it);
+    }
+    
+    return nullptr;
+}
+
+CameraPtr CameraLoader::load_pinhole_perspective_camera_from_json(const nlohmann::json& jobj) {
    
     auto fov_it = jobj.find("horizontal_fov");
     CHECK_AND_THROW_ERROR(fov_it != jobj.end(), "No FOV specified for pinhole perspective camera.");
@@ -32,21 +47,6 @@ CameraPtr load_pinhole_perspective_camera_from_json(const nlohmann::json& jobj) 
         Distance::from_mm(*focal_length_it),
         Distance::from_m(*near_z_it),
         Distance::from_m(*far_z_it));
-}
-
-}
-
-CameraPtr load_camera_from_json(const nlohmann::json& jobj) {
-    auto type_it = jobj.find("type");
-    CHECK_AND_THROW_ERROR(type_it != jobj.end(), "No type specified for camera.");
-
-    if (*type_it == PINHOLE_PERSPECTIVE) {
-        return load_pinhole_perspective_camera_from_json(jobj);
-    } else {
-        THROW_ERROR("Invalid camera type: " << *type_it);
-    }
-    
-    return nullptr;
 }
 
 }

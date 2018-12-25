@@ -17,8 +17,9 @@ BOOST_AUTO_TEST_CASE(TestLoadNoType)
 { 
 })";
 
+    cpt::CameraLoader loader;
     auto jobj = nlohmann::json::parse(test_string);
-    BOOST_CHECK_THROW(cpt::load_camera_from_json(jobj), std::runtime_error);
+    BOOST_CHECK_THROW(loader.load_camera_from_json(jobj), std::runtime_error);
 }
 
 BOOST_AUTO_TEST_CASE(TestLoadUnsupportedType)
@@ -28,8 +29,9 @@ BOOST_AUTO_TEST_CASE(TestLoadUnsupportedType)
     "type": "_THIS_TYPE_NOT_SUPPORTED_"
 })";
 
+    cpt::CameraLoader loader;
     auto jobj = nlohmann::json::parse(test_string);
-    BOOST_CHECK_THROW(cpt::load_camera_from_json(jobj), std::runtime_error);
+    BOOST_CHECK_THROW(loader.load_camera_from_json(jobj), std::runtime_error);
 }
 
 BOOST_AUTO_TEST_CASE(TestLoadIncompletePinholePerspective)
@@ -51,10 +53,11 @@ BOOST_AUTO_TEST_CASE(TestLoadIncompletePinholePerspective)
         "far_z"
     };
 
+    cpt::CameraLoader loader;
     for(const auto& req: required) {
         auto jobj = nlohmann::json::parse(test_string);
         jobj.erase(jobj.find(req));
-        BOOST_CHECK_THROW(cpt::load_camera_from_json(jobj), std::runtime_error);
+        BOOST_CHECK_THROW(loader.load_camera_from_json(jobj), std::runtime_error);
     }
 
 }
@@ -71,7 +74,8 @@ BOOST_AUTO_TEST_CASE(TestLoadPinholePerspective)
     "far_z": 1000.0
 })";
     auto jobj = nlohmann::json::parse(test_string);
-    auto cam = cpt::load_camera_from_json(jobj);
+    cpt::CameraLoader loader;
+    auto cam = loader.load_camera_from_json(jobj);
     auto pinhole = std::dynamic_pointer_cast<cpt::PinholePerspectiveCamera>(cam);
     BOOST_CHECK(pinhole != nullptr);
     BOOST_CHECK_CLOSE(pinhole->horizontal_fov().degrees(), 90.f, epsilon);

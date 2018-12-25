@@ -12,23 +12,26 @@ namespace {
 }
 
 BOOST_AUTO_TEST_CASE(TestLoadMeshDispatch) {
+    cpt::MeshLoader loader;
+
     // File must exist.
-    BOOST_CHECK_THROW(cpt::load_mesh_from_file("data/_does_not_exist.obj"), std::runtime_error);
+    BOOST_CHECK_THROW(loader.load_mesh_from_file("data/_does_not_exist.obj"), std::runtime_error);
 
     // We must support the file type.
-    BOOST_CHECK_THROW(cpt::load_mesh_from_file("data/support.abc"), std::runtime_error);
-    BOOST_CHECK_THROW(cpt::load_mesh_from_file("data/support.fbx"), std::runtime_error);
-    BOOST_CHECK_THROW(cpt::load_mesh_from_file("data/support.ply"), std::runtime_error);
+    BOOST_CHECK_THROW(loader.load_mesh_from_file("data/support.abc"), std::runtime_error);
+    BOOST_CHECK_THROW(loader.load_mesh_from_file("data/support.fbx"), std::runtime_error);
+    BOOST_CHECK_THROW(loader.load_mesh_from_file("data/support.ply"), std::runtime_error);
 
     // We must be robust to capitilization for extension detection.
     // Check that we can successfully load/dispatch in the presence of non-lowercase.
-    check_test_plane(cpt::load_mesh_from_file("data/plane.obj"));
-    check_test_plane(cpt::load_mesh_from_file("data/plane.OBJ"));
+    check_test_plane(loader.load_mesh_from_file("data/plane.obj"));
+    check_test_plane(loader.load_mesh_from_file("data/plane.OBJ"));
 }
 
 BOOST_AUTO_TEST_CASE(TestLoadObj) {
+    cpt::MeshLoader loader;
     // Ensure that calling the load obj function directly also succeeds.
-    check_test_plane(cpt::load_obj_from_file("data/plane.obj"));
+    check_test_plane(loader.load_obj_from_file("data/plane.obj"));
 }
 
 BOOST_AUTO_TEST_CASE(TestGeometryAggregateBuilder) {
