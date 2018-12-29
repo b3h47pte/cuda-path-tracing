@@ -1,5 +1,6 @@
 #include "scene_loader.h"
 #include <boost/filesystem.hpp>
+#include "gpgpu/cuda_ptr.h"
 #include <json/json.hpp>
 #include "scene/loader/camera_loader.h"
 #include "scene/loader/mesh_loader.h"
@@ -19,7 +20,7 @@ const std::string TRANSFORM_ID = "xform";
 }
 
 ScenePtr SceneBuilder::construct() {
-    auto scene = std::make_shared<Scene>(
+    auto scene = cuda_make_shared<Scene>(
         std::move(_geometry),
         std::move(_cameras));
     return scene;

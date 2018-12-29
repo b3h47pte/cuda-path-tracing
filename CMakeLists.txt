@@ -14,6 +14,13 @@ SET(CMAKE_CXX_STANDARD 11)
 SET(CMAKE_CUDA_STANDARD 11)
 SET(CMAKE_CUDA_STANDARD_REQUIRED ON)
 
+# This is probably excessive.
+SET(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -gencode arch=compute_35,code=sm_35")
+SET(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -gencode arch=compute_50,code=sm_50")
+SET(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -gencode arch=compute_60,code=sm_60")
+SET(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -gencode arch=compute_70,code=sm_70")
+#SET(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -gencode arch=compute_75,code=sm_75")
+
 # Options
 OPTION(WITH_PROGRAMS "Compile programs." ON)
 OPTION(WITH_TEST_ASSETS "Download and setup test assets." ON)

@@ -12,6 +12,14 @@ Note that the version requirements are what I have tested with, lower versions m
 
 # Compilation
 
+## Requirements
+
+* CMake 3.8+
+* C++11 compatible compiler
+* SM35 compatible GPU
+
+## Instructions
+
 ```
 mkdir build
 cd build

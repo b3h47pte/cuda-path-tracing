@@ -5,6 +5,8 @@ SET(CPT_H_FILES gpgpu/cuda_utils.h
                 math/distance.h
                 math/rotation.h
                 math/transform.h
+                render/cuda_renderer.h
+                gpgpu/cuda_ptr.h
                 scene/scene.h
                 scene/camera/camera.h
                 scene/camera/pinhole_perspective_camera.h
@@ -28,6 +30,7 @@ SET(CPT_CPP_FILES gpgpu/cuda_utils.cpp
                   math/distance.cpp
                   math/rotation.cpp
                   math/transform.cpp
+                  render/cuda_renderer.cpp
                   scene/scene.cpp
                   scene/camera/camera.cpp
                   scene/camera/pinhole_perspective_camera.cpp
@@ -43,7 +46,9 @@ SET(CPT_CPP_FILES gpgpu/cuda_utils.cpp
                   utilities/filesystem_utility.cpp
                   utilities/json_utility.cpp)
 
-ADD_LIBRARY(cpt SHARED ${CPT_H_FILES} ${CPT_CPP_FILES})
+SET(CPT_CU_FILES render/cuda_renderer.cu)
+
+ADD_LIBRARY(cpt SHARED ${CPT_H_FILES} ${CPT_CPP_FILES} ${CPT_CU_FILES})
 
 TARGET_INCLUDE_DIRECTORIES(cpt PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -62,3 +67,4 @@ TARGET_INCLUDE_DIRECTORIES(cpt SYSTEM PUBLIC ${EIGEN3_INCLUDE_DIR})
 TARGET_INCLUDE_DIRECTORIES(cpt SYSTEM PUBLIC ${PROJECT_SOURCE_DIR}/external/include)
 
 SET_TARGET_PROPERTIES(cpt PROPERTIES POSITION_INDEPENDENT_CODE ON)
+SET_TARGET_PROPERTIES(cpt PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
