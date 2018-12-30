@@ -17,9 +17,11 @@ CudaTriangle::CudaTriangle(
         _normals[i] = normals[i];
         _uvs[i] = uvs[i];
     }
+
+    set_aabb(create_aabb());
 }
 
-CudaAABB CudaTriangle::create_bounding_box() const {
+CudaAABB CudaTriangle::create_aabb() const {
     return CudaAABB();
 }
 

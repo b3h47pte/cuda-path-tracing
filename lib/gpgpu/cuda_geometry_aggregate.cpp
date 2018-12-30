@@ -13,6 +13,8 @@ CudaGeometryAggregate::CudaGeometryAggregate(
     for (size_t i = 0; i < _num_children; ++i) {
         _children[i] = children[i];
     }
+
+    set_aabb(create_aabb());
 }
 
 CudaGeometryAggregate::~CudaGeometryAggregate() {
@@ -39,7 +41,7 @@ void CudaGeometryAggregate::unpack_geometry(std::vector<CudaGeometry*>& storage)
     _num_children = 0;
 }
 
-CudaAABB CudaGeometryAggregate::create_bounding_box() const {
+CudaAABB CudaGeometryAggregate::create_aabb() const {
     return CudaAABB();
 }
 

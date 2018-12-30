@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gpgpu/cuda_aabb.h"
+#include "gpgpu/math/cuda_vector.h"
 #include <vector>
 
 namespace cpt {
@@ -11,7 +12,15 @@ public:
     virtual ~CudaGeometry() = default;
     virtual void unpack_geometry(std::vector<CudaGeometry*>& storage);
     virtual bool unpacked_has_self() const { return true; }
-    virtual CudaAABB create_bounding_box() const = 0;
+
+    const CudaAABB& bounding_box() const { return _aabb; }
+    const CudaVector<float,3>& centroid() const { return _aabb.centroid(); }
+
+protected:
+    void set_aabb(const CudaAABB& aabb) { _aabb = aabb; }
+
+private:
+    CudaAABB _aabb;
 };
 
 inline void CudaGeometry::unpack_geometry(std::vector<CudaGeometry*>& storage)

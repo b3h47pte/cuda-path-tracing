@@ -17,11 +17,12 @@ public:
 
     void unpack_geometry(std::vector<CudaGeometry*>& storage) override;
     bool unpacked_has_self() const override { return false; }
-    CudaAABB create_bounding_box() const override;
 
     size_t num_children() const { return _num_children; }
 
 private:
+    CudaAABB create_aabb() const;
+
     CudaGeometry** _children;
     MemoryOwnership _ownership;
     size_t         _num_children;
