@@ -22,7 +22,11 @@ CudaTriangle::CudaTriangle(
 }
 
 CudaAABB CudaTriangle::create_aabb() const {
-    return CudaAABB();
+    CudaAABB aabb;
+    for (auto i = 0; i < 3; ++i) {
+        aabb.expand(_vertices[i]);
+    }
+    return aabb;
 }
 
 }
