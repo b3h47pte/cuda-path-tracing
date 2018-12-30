@@ -44,6 +44,10 @@ public:
         return *this;
     }
 
+    const T& operator[](size_t idx) const {
+        return _data[idx];
+    }
+
 private:
     T* _data;
 };

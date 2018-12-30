@@ -31,8 +31,8 @@ CudaBVH::CudaBVH(
     // Sort geometry along the split axis using the centroid.
     std::vector<CudaGeometry*> sorted_geometry(cuda_geom.begin(), cuda_geom.end());
     std::sort(sorted_geometry.begin(), sorted_geometry.end(), 
-    [](CudaGeometry* a, CudaGeometry* b) {
-        return true;
+    [split_axis](CudaGeometry* a, CudaGeometry* b) {
+        return a->centroid()[split_axis] < b->centroid()[split_axis];
     });
 
     const size_t num_children_per_node = cuda_geom.size() / max_num_children;
