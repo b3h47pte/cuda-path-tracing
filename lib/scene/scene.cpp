@@ -9,4 +9,15 @@ Scene::Scene(
     _cameras(std::move(cameras)) {
 }
 
+std::vector<CudaGeometry*> Scene::cuda_geometry() const {
+    std::vector<CudaGeometry*> geom(_geometry.size());
+
+    // NOTE: This cache is currently not thread safe.
+    Geometry::CudaGeometryCache cache;
+    for (size_t i = 0; i < geom.size(); ++i) {
+        geom[i] = _geometry[i]->create_cuda(cache);
+    }
+    return geom;
+}
+
 }

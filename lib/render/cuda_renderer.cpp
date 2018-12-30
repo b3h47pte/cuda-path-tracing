@@ -2,11 +2,11 @@
 
 namespace cpt {
 
-CudaRenderer::CudaRenderer(const ScenePtr& scene) {
+CudaRenderer::CudaRenderer(const ScenePtr& scene):
+    _cuda_scene(cuda_make_shared<CudaScene>(scene)) {
 }
 
 void CudaRenderer::render() const {
 }
-
 
 }

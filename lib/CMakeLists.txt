@@ -1,6 +1,11 @@
 FIND_PACKAGE(CUDA REQUIRED)
 
-SET(CPT_H_FILES gpgpu/cuda_utils.h
+SET(CPT_H_FILES gpgpu/cuda_acceleration_structure.h
+                gpgpu/cuda_utils.h
+                gpgpu/cuda_scene.h
+                gpgpu/cuda_triangle.h
+                gpgpu/cuda_geometry.h
+                gpgpu/math/cuda_vector.h
                 math/angles.h
                 math/distance.h
                 math/rotation.h
@@ -25,7 +30,11 @@ SET(CPT_H_FILES gpgpu/cuda_utils.h
                 utilities/filesystem_utility.h
                 utilities/json_utility.h)
 
-SET(CPT_CPP_FILES gpgpu/cuda_utils.cpp
+SET(CPT_CPP_FILES gpgpu/cuda_acceleration_structure.cpp
+                  gpgpu/cuda_utils.cpp
+                  gpgpu/cuda_scene.cpp
+                  gpgpu/cuda_triangle.cpp
+                  gpgpu/cuda_geometry.cpp
                   math/angles.cpp
                   math/distance.cpp
                   math/rotation.cpp
@@ -55,6 +64,7 @@ TARGET_INCLUDE_DIRECTORIES(cpt PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 # CUDA
 TARGET_INCLUDE_DIRECTORIES(cpt SYSTEM PUBLIC ${CUDA_INCLUDE_DIRS} )
 TARGET_LINK_LIBRARIES(cpt ${CUDA_LIBRARIES})
+CUDA_ADD_CUBLAS_TO_TARGET(cpt)
 
 # Boost
 TARGET_INCLUDE_DIRECTORIES(cpt SYSTEM PUBLIC ${Boost_INCLUDE_DIRS})

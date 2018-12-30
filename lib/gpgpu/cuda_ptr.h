@@ -18,12 +18,17 @@ struct CudaDeleter
 };
 
 template<typename T,typename ...Args>
-std::shared_ptr<T> cuda_make_shared(Args&&... args) {
+T* cuda_new(Args&&... args) {
     void* mem;
     cudaMallocManaged(&mem, sizeof(T));
 
     T* obj = new (mem) T(std::forward<Args>(args)...);
-    return std::shared_ptr<T>(obj, CudaDeleter<T>());
+    return obj;
+}
+
+template<typename T,typename ...Args>
+std::shared_ptr<T> cuda_make_shared(Args&&... args) {
+    return std::shared_ptr<T>(cuda_new<T>(std::forward<Args>(args)...), CudaDeleter<T>());
 }
 
 }

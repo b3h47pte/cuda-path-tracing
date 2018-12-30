@@ -14,6 +14,7 @@ public:
 
     size_t num_children() const { return _children.size(); }
     const GeometryPtr& get_geometry(size_t idx) const { return _children[idx]; }
+    CudaGeometry* create_cuda(CudaGeometryCache& cache) const override;
 
 private:
     std::vector<GeometryPtr> _children;

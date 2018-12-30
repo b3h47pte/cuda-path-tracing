@@ -5,6 +5,11 @@
 #include <stdexcept>
 
 namespace cpt {
+namespace {
+
+cublasHandle_t cublas_handle;
+
+}
 
 void initialize_cuda() {
     // Ensure that there exists a suitable GPU for execution.
@@ -15,6 +20,9 @@ void initialize_cuda() {
     // Use device 0 by default.
     cudaDeviceProp prop;
     CHECK_CUDA_ERROR(cudaGetDeviceProperties(&prop, 0));
+
+    // Initialize CuBlas.
+    CHECK_CUBLAS_ERROR(cublasCreate(&cublas_handle));
 
     std::cout << "===========================================================" << std::endl;
     std::cout << "CUDA Initialization with Device 0" << std::endl;

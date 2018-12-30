@@ -9,13 +9,15 @@ namespace cpt {
 
 GeometryAggregate::GeometryAggregate(
     const std::vector<GeometryPtr>& children):
-    _children(children)
-{
+    _children(children) {
 
 }
 
-GeometryAggregatePtr GeometryAggregateBuilder::construct() const
-{
+CudaGeometry* GeometryAggregate::create_cuda(CudaGeometryCache& cache) const {
+    return nullptr;
+}
+
+GeometryAggregatePtr GeometryAggregateBuilder::construct() const {
     auto vertex_container = std::make_shared<VertexContainer>();
     vertex_container->positions = stl_vector_to_eigen_array(_pos);
     vertex_container->uvs = stl_vector_to_eigen_array(_uv);
@@ -54,26 +56,22 @@ GeometryAggregatePtr GeometryAggregateBuilder::construct() const
     return geometry;
 }
 
-void GeometryAggregateBuilder::add_vertex_position(const Eigen::Vector3f& pos)
-{
+void GeometryAggregateBuilder::add_vertex_position(const Eigen::Vector3f& pos) {
     _pos.push_back(pos);
 }
 
-void GeometryAggregateBuilder::add_vertex_uv(const Eigen::Vector2f& uv)
-{
+void GeometryAggregateBuilder::add_vertex_uv(const Eigen::Vector2f& uv) {
     _uv.push_back(uv);
 }
 
-void GeometryAggregateBuilder::add_vertex_normal(const Eigen::Vector3f& normal)
-{
+void GeometryAggregateBuilder::add_vertex_normal(const Eigen::Vector3f& normal) {
     _normals.push_back(normal);
 }
 
 void GeometryAggregateBuilder::add_face(
     const Eigen::Vector3i& vertex_indices,
     const Eigen::Vector3i& uv_indices,
-    const Eigen::Vector3i& normal_indices)
-{
+    const Eigen::Vector3i& normal_indices) {
     _face_pos_idx.push_back(vertex_indices);
     _face_uv_idx.push_back(uv_indices);
     _face_normal_idx.push_back(normal_indices);

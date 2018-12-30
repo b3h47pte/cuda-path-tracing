@@ -17,6 +17,8 @@ public:
     size_t num_geometry() const { return _geometry.size(); }
     const GeometryPtr& geometry(size_t idx) const { return _geometry[idx]; }
 
+    std::vector<CudaGeometry*> cuda_geometry() const;
+
     size_t num_cameras() const { return _cameras.size(); }
     bool has_camera(const std::string& id) const { return _cameras.find(id) != _cameras.end(); }
     const CameraPtr& camera(const std::string& id) const { return _cameras.at(id); }
