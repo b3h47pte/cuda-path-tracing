@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <cuda_runtime.h>
 #include <Eigen/Core>
 #include "gpgpu/cuda_utils.h"
 
@@ -11,9 +12,14 @@ class CudaVector
 {
 public:
     CudaVector() {
+        cudaMallocManaged(&_data, sizeof(T) * Dim); 
         for (auto i = 0; i < Dim; ++i) {
             _data[i] = T(0.0);
         }
+    }
+
+    ~CudaVector() {
+        cudaFree(_data);
     }
 
     void set_from_raw(const T* raw) {
@@ -39,7 +45,7 @@ public:
     }
 
 private:
-    T _data[Dim];
+    T* _data;
 };
 
 template<typename T,int Dim>
