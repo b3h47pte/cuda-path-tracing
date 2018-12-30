@@ -12,7 +12,7 @@ class CudaVector
 {
 public:
     CudaVector() {
-        cudaMallocManaged(&_data, sizeof(T) * Dim); 
+        CHECK_CUDA_ERROR(cudaMallocManaged(&_data, sizeof(T) * Dim));
         for (auto i = 0; i < Dim; ++i) {
             _data[i] = T(0.0);
         }

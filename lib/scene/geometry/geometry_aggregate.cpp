@@ -1,7 +1,9 @@
 #include "scene/geometry/geometry_aggregate.h"
 
+#include "gpgpu/cuda_geometry_aggregate.h"
 #include "gpgpu/cuda_ptr.h"
 #include "scene/geometry/triangle.h"
+#include <unordered_set>
 #include "utilities/eigen_utility.h"
 #include "utilities/error.h"
 
@@ -10,11 +12,30 @@ namespace cpt {
 GeometryAggregate::GeometryAggregate(
     const std::vector<GeometryPtr>& children):
     _children(children) {
-
+    // Ensure there are no duplicate children.
+    std::unordered_set<Geometry*> seen;
+    for (size_t i = 0; i < children.size(); ++i) {
+        CHECK_AND_THROW_ERROR(seen.find(children[i].get()) == seen.end(), "Geometry aggregate can not have duplicated children (for now).");
+        seen.insert(children[i].get());
+    }
 }
 
 CudaGeometry* GeometryAggregate::create_cuda(CudaGeometryCache& cache) const {
-    return nullptr;
+    auto* key = const_cast<GeometryAggregate*>(this);
+    auto it = cache.find(key);
+    if (it != cache.end()) {
+        return it->second;
+    }
+
+    // NOTE: We can't have duplicate children because CudaGeometryAggregate
+    // will double free in that case (because it will get two of the same pointers
+    // due to the caching mechanism).
+    std::vector<CudaGeometry*> cuda_children(_children.size());
+    for (size_t i = 0; i < cuda_children.size(); ++i) {
+        cuda_children[i] = _children[i]->create_cuda(cache);
+    }
+    CudaGeometryAggregate* agg = cuda_new<CudaGeometryAggregate>(cuda_children);
+    return agg;
 }
 
 GeometryAggregatePtr GeometryAggregateBuilder::construct() const {

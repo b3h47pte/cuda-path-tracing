@@ -1,10 +1,11 @@
 #pragma once
 
-#include "gpgpu/cuda_acceleration_structure.h"
 #include "scene/scene.h"
 #include <memory>
 
 namespace cpt {
+
+class CudaAccelerationStructure;
 
 class CudaScene
 {

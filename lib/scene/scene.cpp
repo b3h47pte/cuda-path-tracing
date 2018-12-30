@@ -1,4 +1,7 @@
 #include "scene.h"
+#include "gpgpu/cuda_geometry_aggregate.h"
+#include "gpgpu/cuda_ptr.h"
+#include <unordered_set>
 
 namespace cpt {
 
@@ -9,7 +12,7 @@ Scene::Scene(
     _cameras(std::move(cameras)) {
 }
 
-std::vector<CudaGeometry*> Scene::cuda_geometry() const {
+std::vector<CudaGeometry*> Scene::cuda_geometry(bool unpack) const {
     std::vector<CudaGeometry*> geom(_geometry.size());
 
     // NOTE: This cache is currently not thread safe.
@@ -17,7 +20,16 @@ std::vector<CudaGeometry*> Scene::cuda_geometry() const {
     for (size_t i = 0; i < geom.size(); ++i) {
         geom[i] = _geometry[i]->create_cuda(cache);
     }
-    return geom;
+
+    if (!unpack) {
+        return geom;
+    }
+
+    CudaGeometryAggregate cuda_agg(geom);
+
+    std::vector<CudaGeometry*> unpacked_geom;
+    cuda_agg.unpack_geometry(unpacked_geom);
+    return unpacked_geom;
 }
 
 }

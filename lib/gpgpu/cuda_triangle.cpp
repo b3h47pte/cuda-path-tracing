@@ -18,4 +18,9 @@ CudaTriangle::CudaTriangle(
         _uvs[i] = uvs[i];
     }
 }
+
+CudaAABB CudaTriangle::create_bounding_box() const {
+    return CudaAABB();
+}
+
 }

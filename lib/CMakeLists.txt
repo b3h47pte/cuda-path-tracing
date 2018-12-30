@@ -1,10 +1,13 @@
 FIND_PACKAGE(CUDA REQUIRED)
 
-SET(CPT_H_FILES gpgpu/cuda_acceleration_structure.h
+SET(CPT_H_FILES gpgpu/cuda_aabb.h
+                gpgpu/cuda_acceleration_structure.h
+                gpgpu/cuda_bvh.h
                 gpgpu/cuda_utils.h
                 gpgpu/cuda_scene.h
                 gpgpu/cuda_triangle.h
                 gpgpu/cuda_geometry.h
+                gpgpu/cuda_geometry_aggregate.h
                 gpgpu/math/cuda_vector.h
                 math/angles.h
                 math/distance.h
@@ -28,13 +31,18 @@ SET(CPT_H_FILES gpgpu/cuda_acceleration_structure.h
                 utilities/eigen_utility.h
                 utilities/error.h
                 utilities/filesystem_utility.h
-                utilities/json_utility.h)
+                utilities/json_utility.h
+                utilities/noncopyable.h
+                utilities/memory_ownership.h)
 
-SET(CPT_CPP_FILES gpgpu/cuda_acceleration_structure.cpp
+SET(CPT_CPP_FILES gpgpu/cuda_aabb.cpp
+                  gpgpu/cuda_acceleration_structure.cpp
+                  gpgpu/cuda_bvh.cpp
                   gpgpu/cuda_utils.cpp
                   gpgpu/cuda_scene.cpp
                   gpgpu/cuda_triangle.cpp
                   gpgpu/cuda_geometry.cpp
+                  gpgpu/cuda_geometry_aggregate.cpp
                   math/angles.cpp
                   math/distance.cpp
                   math/rotation.cpp

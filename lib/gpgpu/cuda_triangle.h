@@ -13,6 +13,7 @@ public:
         const std::vector<CudaVector<float,3>>& vertices,
         const std::vector<CudaVector<float,3>>& normals,
         const std::vector<CudaVector<float,2>>& uvs);
+    CudaAABB create_bounding_box() const override;
 
 private:
     CudaVector<float,3> _vertices[3]; 
