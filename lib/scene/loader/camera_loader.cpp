@@ -42,7 +42,7 @@ CameraPtr CameraLoader::load_pinhole_perspective_camera_from_json(const nlohmann
     auto far_z_it = jobj.find("far_z");
     CHECK_AND_THROW_ERROR(far_z_it != jobj.end(), "No far Z plane specified for pinhole perspective camera.");
 
-    return cuda_make_shared<PinholePerspectiveCamera>(
+    return std::make_shared<PinholePerspectiveCamera>(
         Angle::from_degrees(*fov_it),
         *ar_it,
         Distance::from_mm(*focal_length_it),

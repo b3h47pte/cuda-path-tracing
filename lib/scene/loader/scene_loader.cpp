@@ -20,7 +20,7 @@ const std::string TRANSFORM_ID = "xform";
 }
 
 ScenePtr SceneBuilder::construct() {
-    auto scene = cuda_make_shared<Scene>(
+    auto scene = std::make_shared<Scene>(
         std::move(_geometry),
         std::move(_cameras));
     return scene;

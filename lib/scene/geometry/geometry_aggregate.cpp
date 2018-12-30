@@ -16,7 +16,7 @@ GeometryAggregate::GeometryAggregate(
 
 GeometryAggregatePtr GeometryAggregateBuilder::construct() const
 {
-    auto vertex_container = cuda_make_shared<VertexContainer>();
+    auto vertex_container = std::make_shared<VertexContainer>();
     vertex_container->positions = stl_vector_to_eigen_array(_pos);
     vertex_container->uvs = stl_vector_to_eigen_array(_uv);
     vertex_container->normals = stl_vector_to_eigen_array(_normals);
@@ -43,14 +43,14 @@ GeometryAggregatePtr GeometryAggregateBuilder::construct() const
                 "Vertex normal index out of bound.");
         }
 
-        children.emplace_back(cuda_make_shared<Triangle>(
+        children.emplace_back(std::make_shared<Triangle>(
             vertex_container,
             _face_pos_idx[i],
             _face_uv_idx[i],
             _face_normal_idx[i]));
     }
 
-    auto geometry = cuda_make_shared<GeometryAggregate>(children);
+    auto geometry = std::make_shared<GeometryAggregate>(children);
     return geometry;
 }
 
