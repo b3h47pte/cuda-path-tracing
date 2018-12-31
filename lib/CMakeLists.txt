@@ -31,12 +31,14 @@ SET(CPT_H_FILES gpgpu/cuda_aabb.h
                 scene/geometry/vertex_container.h
                 scene/geometry/triangle.h
                 scene/object.h
+                utilities/enum_hash.h
                 utilities/eigen_utility.h
                 utilities/error.h
                 utilities/filesystem_utility.h
                 utilities/json_utility.h
                 utilities/noncopyable.h
-                utilities/memory_ownership.h)
+                utilities/memory_ownership.h
+                utilities/timer.h)
 
 SET(CPT_CPP_FILES gpgpu/cuda_aabb.cpp
                   gpgpu/cuda_acceleration_structure.cpp
@@ -66,7 +68,8 @@ SET(CPT_CPP_FILES gpgpu/cuda_aabb.cpp
                   scene/loader/camera_loader.cpp
                   scene/loader/xform_loader.cpp
                   utilities/filesystem_utility.cpp
-                  utilities/json_utility.cpp)
+                  utilities/json_utility.cpp
+                  utilities/timer.cpp)
 
 SET(CPT_CU_FILES render/cuda_renderer.cu)
 

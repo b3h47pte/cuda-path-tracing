@@ -6,6 +6,7 @@
 #include <string>
 #include <utilities/filesystem_utility.h>
 #include <utilities/json_utility.h>
+#include <utilities/timer.h>
 
 namespace po = boost::program_options;
 
@@ -25,16 +26,22 @@ int main(int argc, char** argv) {
 
     // Load scene.
     const std::string sceneFname = vm["scene"].as<std::string>();
-    std::cout << "Loading Scene [" << sceneFname << "]..." << std::endl;
+    START_TIMER(scene_loader, "Loading Scene [" << sceneFname << "]...");
     cpt::SceneLoader loader;
     cpt::ScenePtr scene = loader.load_scene_from_json(
         cpt::load_json_from_file(sceneFname),
         cpt::get_parent_directory(sceneFname));
+    END_TIMER(scene_loader);
 
     // Render.
     cpt::AovOutput output;
+    START_TIMER(create_renderer, "Create renderer...");
     cpt::CudaRenderer rndr(scene);
+    END_TIMER(create_renderer);
+
+    START_TIMER(render, "Render...");
     rndr.render(output);
+    END_TIMER(render);
 
     // Save image.
     // TODO: Make file path pull from options.
