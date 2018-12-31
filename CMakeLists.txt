@@ -49,8 +49,9 @@ IF(WITH_TEST_ASSETS)
 ENDIF()
 
 # Packages
+ADD_DEFINITIONS(-DBOOST_LOG_DYN_LINK)
 FIND_PACKAGE(Boost 1.60 REQUIRED
-             COMPONENTS system filesystem program_options unit_test_framework)
+             COMPONENTS system filesystem program_options unit_test_framework log)
 FIND_PACKAGE(Eigen3 REQUIRED)
 
 # Compile library and programs.

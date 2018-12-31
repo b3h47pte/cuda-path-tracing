@@ -36,6 +36,7 @@ SET(CPT_H_FILES gpgpu/cuda_aabb.h
                 utilities/error.h
                 utilities/filesystem_utility.h
                 utilities/json_utility.h
+                utilities/log.h
                 utilities/noncopyable.h
                 utilities/memory_ownership.h
                 utilities/timer.h)
@@ -69,6 +70,7 @@ SET(CPT_CPP_FILES gpgpu/cuda_aabb.cpp
                   scene/loader/xform_loader.cpp
                   utilities/filesystem_utility.cpp
                   utilities/json_utility.cpp
+                  utilities/log.cpp
                   utilities/timer.cpp)
 
 SET(CPT_CU_FILES render/cuda_renderer.cu)
@@ -84,7 +86,7 @@ CUDA_ADD_CUBLAS_TO_TARGET(cpt)
 
 # Boost
 TARGET_INCLUDE_DIRECTORIES(cpt SYSTEM PUBLIC ${Boost_INCLUDE_DIRS})
-TARGET_LINK_LIBRARIES(cpt Boost::system Boost::filesystem)
+TARGET_LINK_LIBRARIES(cpt Boost::system Boost::filesystem Boost::log)
 
 # Eigen
 TARGET_INCLUDE_DIRECTORIES(cpt SYSTEM PUBLIC ${EIGEN3_INCLUDE_DIR})

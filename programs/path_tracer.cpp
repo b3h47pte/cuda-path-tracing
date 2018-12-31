@@ -6,6 +6,7 @@
 #include <string>
 #include <utilities/filesystem_utility.h>
 #include <utilities/json_utility.h>
+#include <utilities/log.h>
 #include <utilities/timer.h>
 
 namespace po = boost::program_options;
@@ -22,11 +23,12 @@ int main(int argc, char** argv) {
     po::notify(vm);
 
     // Initialize library.
+    cpt::initialize_logging(cpt::LogLevel::All);
     cpt::initialize_cuda();
 
     // Load scene.
     const std::string sceneFname = vm["scene"].as<std::string>();
-    START_TIMER(scene_loader, "Loading Scene [" << sceneFname << "]...");
+    START_TIMER_INFO(scene_loader, "Loading Scene [" << sceneFname << "]...");
     cpt::SceneLoader loader;
     cpt::ScenePtr scene = loader.load_scene_from_json(
         cpt::load_json_from_file(sceneFname),
@@ -35,18 +37,18 @@ int main(int argc, char** argv) {
 
     // Render.
     cpt::AovOutput output;
-    START_TIMER(create_renderer, "Create renderer...");
+    START_TIMER_INFO(create_renderer, "Create renderer...");
     cpt::CudaRenderer rndr(scene);
     END_TIMER(create_renderer);
 
-    START_TIMER(render, "Render...");
+    START_TIMER_INFO(render, "Render...");
     rndr.render(output);
     END_TIMER(render);
 
     // Save image.
     // TODO: Make file path pull from options.
     // TODO: Tonemapping?.
-    START_TIMER(save, "Saving...");
+    START_TIMER_INFO(save, "Saving...");
     output.save_channel_to_file(cpt::AovOutput::Channels::FinalImage, "tmp.tiff");
     END_TIMER(save);
 
