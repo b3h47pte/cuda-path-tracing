@@ -46,7 +46,9 @@ int main(int argc, char** argv) {
     // Save image.
     // TODO: Make file path pull from options.
     // TODO: Tonemapping?.
+    START_TIMER(save, "Saving...");
     output.save_channel_to_file(cpt::AovOutput::Channels::FinalImage, "tmp.tiff");
+    END_TIMER(save);
 
     return 0;
 }
