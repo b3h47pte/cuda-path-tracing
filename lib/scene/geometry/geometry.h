@@ -23,9 +23,6 @@ public:
 
     using CudaGeometryCache = std::unordered_map<Geometry*, CudaGeometry*>;
     virtual CudaGeometry* create_cuda(CudaGeometryCache& cache) const = 0;
-
-private:
-    std::shared_ptr<CudaGeometry> _cached_cuda;
 };
 
 using GeometryPtr = std::shared_ptr<Geometry>;
