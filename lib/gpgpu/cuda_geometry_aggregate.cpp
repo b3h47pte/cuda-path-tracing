@@ -43,7 +43,7 @@ void CudaGeometryAggregate::unpack_geometry(std::vector<CudaGeometry*>& storage)
 
 CudaAABB CudaGeometryAggregate::create_aabb() const {
     CudaAABB aabb;
-    for (auto i = 0; i < 3; ++i) {
+    for (size_t i = 0; i < num_children(); ++i) {
         aabb.expand(_children[i]->bounding_box());
     }
     return aabb;
