@@ -14,19 +14,16 @@ class CudaVector
 {
 public:
     CudaVector() {
-        alloc();
         for (auto i = 0; i < Dim; ++i) {
             _data[i] = T(0.0);
         }
     }
 
     CudaVector(const T* data) {
-        alloc();
         set_from_raw(data);
     }
 
     ~CudaVector() {
-        cudaFree(_data);
     }
 
     void set_from_raw(const T* raw) {
@@ -34,8 +31,7 @@ public:
     }
 
     CudaVector(const CudaVector& other)  {
-        alloc();
-        *this = other;
+        set_from_raw(other._data);
     }
 
     CudaVector& operator=(const CudaVector& other) {
@@ -44,11 +40,11 @@ public:
     }
 
     CudaVector(CudaVector&& other) {
-        std::swap(_data, other._data);
+        set_from_raw(other._data);
     }
 
     CudaVector& operator=(CudaVector&& other) {
-        std::swap(_data, other._data);
+        set_from_raw(other._data);
         return *this;
     }
 
@@ -61,16 +57,13 @@ public:
     }
 
 private:
-    void alloc() {
-        CHECK_CUDA_ERROR(cudaMallocManaged(&_data, sizeof(T) * Dim));
-    }
 
-    T* _data{nullptr};
+    T _data[Dim];
 };
 
 template<typename T,int Dim>
-CudaVector<T,Dim>* eigen_vector_to_cuda(const Eigen::Ref<const Eigen::Matrix<T,Dim,1>>& vec) {
-    CudaVector<T,Dim>* ret = cuda_new<CudaVector<T,Dim>>(vec.data());
+CudaVector<T,Dim> eigen_vector_to_cuda(const Eigen::Ref<const Eigen::Matrix<T,Dim,1>>& vec) {
+    CudaVector<T,Dim> ret(vec.data());
     return ret;
 }
 

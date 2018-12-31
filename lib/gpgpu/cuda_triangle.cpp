@@ -5,9 +5,9 @@
 namespace cpt {
 
 CudaTriangle::CudaTriangle(
-    const std::vector<CudaVector<float,3>*>& vertices,
-    const std::vector<CudaVector<float,3>*>& normals,
-    const std::vector<CudaVector<float,2>*>& uvs) {
+    const std::vector<CudaVector<float,3>>& vertices,
+    const std::vector<CudaVector<float,3>>& normals,
+    const std::vector<CudaVector<float,2>>& uvs) {
 
     CHECK_AND_THROW_ERROR(vertices.size() == 3, "CudaTriangle needs three vertices.");
     CHECK_AND_THROW_ERROR(normals.size() == 3, "CudaTriangle needs three normals.");
@@ -25,7 +25,7 @@ CudaTriangle::CudaTriangle(
 CudaAABB CudaTriangle::create_aabb() const {
     CudaAABB aabb;
     for (auto i = 0; i < 3; ++i) {
-        aabb.expand(*_vertices[i]);
+        aabb.expand(_vertices[i]);
     }
     return aabb;
 }
