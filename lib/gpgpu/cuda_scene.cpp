@@ -5,6 +5,7 @@
 #include "gpgpu/cuda_ptr.h"
 #include "gpgpu/cuda_utils.h"
 #include "utilities/error.h"
+#include "utilities/timer.h"
 
 namespace cpt {
 namespace {
@@ -13,11 +14,14 @@ std::vector<CudaGeometry*> extract_cuda_geometry_from_scene(const ScenePtr& scen
     std::vector<CudaGeometry*> geom(scene->num_geometry());
 
     CudaConverter converter;
+    LOG("Total Geometry to Convert: " << geom.size(), LogLevel::Debug);
+    START_TIMER_DEBUG(convert, "Converting to CUDA...");
     for (size_t i = 0; i < geom.size(); ++i) {
         scene->geometry(i)->convert(converter);
         geom[i] = converter.get_from_cache<CudaGeometry>(scene->geometry(i).get());
         CHECK_AND_THROW_ERROR(geom[i] != nullptr, "Failed to convert geometry.");
     }
+    END_TIMER(convert);
 
     if (!unpack) {
         return geom;

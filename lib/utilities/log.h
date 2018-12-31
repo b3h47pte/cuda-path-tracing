@@ -7,10 +7,9 @@ enum class LogLevel
 {
     Debug,
     Info,
-    All
 };
 
-void initialize_logging(LogLevel max_level);
+void initialize_logging(LogLevel min_level);
 void log(const std::string& msg, LogLevel level);
 
 #define LOG(x, level) \

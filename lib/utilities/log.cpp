@@ -22,9 +22,9 @@ boost::log::trivial::severity_level log_level_to_boost(LogLevel lvl) {
 
 }
 
-void initialize_logging(LogLevel max_level) {
+void initialize_logging(LogLevel min_level) {
     boost::log::core::get()->set_filter(
-        boost::log::trivial::severity <= log_level_to_boost(max_level)
+        boost::log::trivial::severity >= log_level_to_boost(min_level)
     );
 }
 
@@ -37,7 +37,7 @@ void log(const std::string& msg, LogLevel level) {
         BOOST_LOG_TRIVIAL(info) << msg;
         break;
     default:
-        THROW_ERROR("Unsupported log type.");
+        THROW_ERROR("Log type not implemented.");
     }
 }
 

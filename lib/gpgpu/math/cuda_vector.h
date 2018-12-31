@@ -4,6 +4,8 @@
 #include <cuda_runtime.h>
 #include <Eigen/Core>
 #include "gpgpu/cuda_utils.h"
+#include "gpgpu/cuda_ptr.h"
+#include <iostream>
 
 namespace cpt {
 
@@ -12,10 +14,15 @@ class CudaVector
 {
 public:
     CudaVector() {
-        CHECK_CUDA_ERROR(cudaMallocManaged(&_data, sizeof(T) * Dim));
+        alloc();
         for (auto i = 0; i < Dim; ++i) {
             _data[i] = T(0.0);
         }
+    }
+
+    CudaVector(const T* data) {
+        alloc();
+        set_from_raw(data);
     }
 
     ~CudaVector() {
@@ -23,10 +30,11 @@ public:
     }
 
     void set_from_raw(const T* raw) {
-        CHECK_CUBLAS_ERROR(cublasSetVector(Dim, sizeof(T), raw, 1, _data, 1));
+        memcpy(_data, raw, sizeof(T) * Dim);
     }
 
     CudaVector(const CudaVector& other)  {
+        alloc();
         *this = other;
     }
 
@@ -53,13 +61,16 @@ public:
     }
 
 private:
-    T* _data;
+    void alloc() {
+        CHECK_CUDA_ERROR(cudaMallocManaged(&_data, sizeof(T) * Dim));
+    }
+
+    T* _data{nullptr};
 };
 
 template<typename T,int Dim>
-CudaVector<T,Dim> eigen_vector_to_cuda(const Eigen::Ref<const Eigen::Matrix<T,Dim,1>>& vec) {
-    CudaVector<T,Dim> ret;
-    ret.set_from_raw(vec.data());
+CudaVector<T,Dim>* eigen_vector_to_cuda(const Eigen::Ref<const Eigen::Matrix<T,Dim,1>>& vec) {
+    CudaVector<T,Dim>* ret = cuda_new<CudaVector<T,Dim>>(vec.data());
     return ret;
 }
 

@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
     po::notify(vm);
 
     // Initialize library.
-    cpt::initialize_logging(cpt::LogLevel::All);
+    cpt::initialize_logging(cpt::LogLevel::Debug);
     cpt::initialize_cuda();
 
     // Load scene.

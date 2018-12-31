@@ -1,6 +1,7 @@
 #pragma once
 
 #include <unordered_map>
+#include <tbb/concurrent_unordered_map.h>
 
 namespace cpt {
 
@@ -29,7 +30,7 @@ public:
     }
 
 private:
-    std::unordered_map<void*,void*> _cache;
+    tbb::concurrent_unordered_map<void*,void*> _cache;
 };
 
 }

@@ -37,8 +37,9 @@ SET(CPT_H_FILES gpgpu/cuda_aabb.h
                 utilities/filesystem_utility.h
                 utilities/json_utility.h
                 utilities/log.h
-                utilities/noncopyable.h
                 utilities/memory_ownership.h
+                utilities/noncopyable.h
+                utilities/progress_bar.h
                 utilities/timer.h)
 
 SET(CPT_CPP_FILES gpgpu/cuda_aabb.cpp
@@ -71,6 +72,7 @@ SET(CPT_CPP_FILES gpgpu/cuda_aabb.cpp
                   utilities/filesystem_utility.cpp
                   utilities/json_utility.cpp
                   utilities/log.cpp
+                  utilities/progress_bar.cpp
                   utilities/timer.cpp)
 
 SET(CPT_CU_FILES render/cuda_renderer.cu)
@@ -90,6 +92,10 @@ TARGET_LINK_LIBRARIES(cpt Boost::system Boost::filesystem Boost::log)
 
 # Eigen
 TARGET_INCLUDE_DIRECTORIES(cpt SYSTEM PUBLIC ${EIGEN3_INCLUDE_DIR})
+
+# TBB
+TARGET_INCLUDE_DIRECTORIES(cpt SYSTEM PUBLIC ${TBB_INCLUDE_DIR})
+TARGET_LINK_LIBRARIES(cpt ${TBB_LIBRARIES})
 
 # External
 TARGET_INCLUDE_DIRECTORIES(cpt SYSTEM PUBLIC ${PROJECT_SOURCE_DIR}/external/include)

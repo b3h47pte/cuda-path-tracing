@@ -17,7 +17,7 @@ void Timer::start() {
 void Timer::tick() {
     auto now = Clock::now();
     auto diff = now - _last_start;
-    LOG("END: " << _msg << "[" << std::chrono::duration_cast<std::chrono::milliseconds>(diff).count() / 1000.0  << "s]", _level);
+    LOG("END: " << _msg << "[" << std::chrono::duration_cast<std::chrono::microseconds>(diff).count() / 1e6  << "s]", _level);
     _last_start = now;
 }
 
