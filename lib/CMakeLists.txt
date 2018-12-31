@@ -3,12 +3,14 @@ FIND_PACKAGE(CUDA REQUIRED)
 SET(CPT_H_FILES gpgpu/cuda_aabb.h
                 gpgpu/cuda_acceleration_structure.h
                 gpgpu/cuda_bvh.h
+                gpgpu/cuda_converter.h
                 gpgpu/cuda_utils.h
                 gpgpu/cuda_scene.h
                 gpgpu/cuda_triangle.h
                 gpgpu/cuda_geometry.h
                 gpgpu/cuda_geometry_aggregate.h
                 gpgpu/math/cuda_vector.h
+                gpgpu/gpgpu_converter.h
                 math/angles.h
                 math/distance.h
                 math/rotation.h
@@ -38,6 +40,7 @@ SET(CPT_H_FILES gpgpu/cuda_aabb.h
 SET(CPT_CPP_FILES gpgpu/cuda_aabb.cpp
                   gpgpu/cuda_acceleration_structure.cpp
                   gpgpu/cuda_bvh.cpp
+                  gpgpu/cuda_converter.cpp
                   gpgpu/cuda_utils.cpp
                   gpgpu/cuda_scene.cpp
                   gpgpu/cuda_triangle.cpp

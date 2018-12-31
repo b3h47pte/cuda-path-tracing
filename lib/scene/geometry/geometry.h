@@ -1,8 +1,6 @@
 #pragma once
 
-#include "gpgpu/cuda_geometry.h"
-#include "gpgpu/cuda_ptr.h"
-#include "gpgpu/cuda_utils.h"
+#include "gpgpu/gpgpu_converter.h"
 #include "scene/object.h"
 #include "scene/geometry/vertex_container.h"
 #include <unordered_map>
@@ -21,8 +19,7 @@ public:
     virtual bool is_primitive() const { return false; }
     virtual PrimitiveType primitive_type() const { return PrimitiveType::None; }
 
-    using CudaGeometryCache = std::unordered_map<Geometry*, CudaGeometry*>;
-    virtual CudaGeometry* create_cuda(CudaGeometryCache& cache) const = 0;
+    virtual void convert(GpgpuConverter& converter) const = 0;
 };
 
 using GeometryPtr = std::shared_ptr<Geometry>;
