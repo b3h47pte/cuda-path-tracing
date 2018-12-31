@@ -5,6 +5,7 @@ Note that the version requirements are what I have tested with, lower versions m
 * CUDA 9.2+
 * Boost 1.68+
 * Eigen 3.3+
+* Libtiff
 * GTest 1.8+ [Tests only]
 * GMock 1.8+ [Tests only]
 * JSON for Modern C++ (https://nlohmann.github.io/json) [Provided in external]

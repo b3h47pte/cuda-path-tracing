@@ -1,6 +1,7 @@
 #include <boost/program_options.hpp>
 #include <gpgpu/cuda_utils.h>
 #include <iostream>
+#include <render/cuda_renderer.h>
 #include <scene/loader/scene_loader.h>
 #include <string>
 #include <utilities/filesystem_utility.h>
@@ -31,7 +32,14 @@ int main(int argc, char** argv) {
         cpt::get_parent_directory(sceneFname));
 
     // Render.
+    cpt::AovOutput output;
+    cpt::CudaRenderer rndr(scene);
+    rndr.render(output);
 
     // Save image.
+    // TODO: Make file path pull from options.
+    // TODO: Tonemapping?.
+    output.save_channel_to_file(cpt::AovOutput::Channels::FinalImage, "tmp.tiff");
+
     return 0;
 }

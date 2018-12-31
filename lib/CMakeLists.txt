@@ -15,6 +15,7 @@ SET(CPT_H_FILES gpgpu/cuda_aabb.h
                 math/distance.h
                 math/rotation.h
                 math/transform.h
+                render/aov_output.h
                 render/cuda_renderer.h
                 gpgpu/cuda_ptr.h
                 scene/scene.h
@@ -50,6 +51,7 @@ SET(CPT_CPP_FILES gpgpu/cuda_aabb.cpp
                   math/distance.cpp
                   math/rotation.cpp
                   math/transform.cpp
+                  render/aov_output.cpp
                   render/cuda_renderer.cpp
                   scene/scene.cpp
                   scene/camera/camera.cpp
@@ -86,6 +88,11 @@ TARGET_INCLUDE_DIRECTORIES(cpt SYSTEM PUBLIC ${EIGEN3_INCLUDE_DIR})
 
 # External
 TARGET_INCLUDE_DIRECTORIES(cpt SYSTEM PUBLIC ${PROJECT_SOURCE_DIR}/external/include)
+
+# Image IO
+FIND_PACKAGE(TIFF REQUIRED)
+TARGET_INCLUDE_DIRECTORIES(cpt SYSTEM PUBLIC ${TIFF_INCLUDE_DIR})
+TARGET_LINK_LIBRARIES(cpt ${TIFF_LIBRARIES})
 
 SET_TARGET_PROPERTIES(cpt PROPERTIES POSITION_INDEPENDENT_CODE ON)
 SET_TARGET_PROPERTIES(cpt PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
