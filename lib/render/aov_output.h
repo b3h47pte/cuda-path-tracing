@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include "utilities/enum_hash.h"
+#include <vector>
 
 namespace cpt {
 
@@ -19,6 +20,10 @@ public:
     void initialize(size_t width, size_t height);
     void add_channel(Channels channel);
     void save_channel_to_file(Channels channel, const std::string& filename) const;
+
+    std::vector<AovOutput::Channels> active_channels() const;
+    const boost::gil::rgb32_image_t& image(Channels channel) const;
+    boost::gil::rgb32_image_t& image(Channels channel);
 
 private:
     size_t _width{0};

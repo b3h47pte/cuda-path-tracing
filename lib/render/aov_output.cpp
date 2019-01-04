@@ -31,4 +31,22 @@ void AovOutput::save_channel_to_file(Channels channel, const std::string& filena
     boost::gil::write_view(filename, boost::gil::const_view(it->second), boost::gil::tiff_tag());
 }
 
+std::vector<AovOutput::Channels> AovOutput::active_channels() const {
+    std::vector<AovOutput::Channels> channels;
+    channels.clear();
+    channels.reserve(_aovs.size());
+    for (const auto& kvp : _aovs) {
+        channels.push_back(kvp.first);
+    }
+    return channels;
+}
+
+const boost::gil::rgb32_image_t& AovOutput::image(Channels channel) const {
+    return _aovs.at(channel);
+}
+
+boost::gil::rgb32_image_t& AovOutput::image(Channels channel) {
+    return _aovs[channel];
+}
+
 }

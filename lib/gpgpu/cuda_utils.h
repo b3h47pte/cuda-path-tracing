@@ -1,13 +1,16 @@
 #pragma once
 
 #include <cublas_v2.h>
+#include <cuda_runtime.h>
 #include "utilities/error.h"
 #include <iostream>
 
-#ifdef __CUCDACC__
+#ifdef __CUDACC__
 #define CUDA_HOST __host__
+#define CUDA_DEVHOST __host__ __device__
 #else
 #define CUDA_HOST
+#define CUDA_DEVHOST
 #endif
 
 #ifndef NO_CUDA_CHECKS

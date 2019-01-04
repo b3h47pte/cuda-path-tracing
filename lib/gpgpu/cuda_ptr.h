@@ -7,6 +7,30 @@
 
 namespace cpt {
 
+template<typename T>
+T* cuda_new_array(size_t sz) {
+    void* mem;
+    CHECK_CUDA_ERROR(cudaMallocManaged(&mem, sizeof(T) * sz));
+
+    T* arr = reinterpret_cast<T*>(mem);
+    for (size_t i = 0; i < sz; ++i) { 
+        new (arr + i) T();
+    }
+    return arr;
+}
+
+template<typename T>
+void cuda_delete_array(T* arr, size_t sz) {
+    if (!arr) {
+        return;
+    }
+
+    for (size_t i = 0; i < sz; ++i) {
+        arr[i].~T();
+    }
+    CHECK_CUDA_ERROR(cudaFree(arr));
+}
+
 template<typename T,typename ...Args>
 T* cuda_new(Args&&... args) {
     void* mem;

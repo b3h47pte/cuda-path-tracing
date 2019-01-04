@@ -1,5 +1,6 @@
 #pragma once
 
+#include "gpgpu/cuda_aov_output.h"
 #include "gpgpu/cuda_utils.h"
 #include "gpgpu/cuda_ptr.h"
 #include "gpgpu/cuda_scene.h"
@@ -14,7 +15,7 @@ class CudaRenderer
 public:
     CudaRenderer(const ScenePtr& scene);
 
-    void render(AovOutput& output) const;
+    CUDA_HOST void render(AovOutput& output) const;
 private:
     CudaScenePtr _cuda_scene;
 };

@@ -1,6 +1,7 @@
 FIND_PACKAGE(CUDA REQUIRED)
 
 SET(CPT_H_FILES gpgpu/cuda_aabb.h
+                gpgpu/cuda_aov_output.h
                 gpgpu/cuda_acceleration_structure.h
                 gpgpu/cuda_bvh.h
                 gpgpu/cuda_converter.h
@@ -9,6 +10,7 @@ SET(CPT_H_FILES gpgpu/cuda_aabb.h
                 gpgpu/cuda_triangle.h
                 gpgpu/cuda_geometry.h
                 gpgpu/cuda_geometry_aggregate.h
+                gpgpu/cuda_image.h
                 gpgpu/math/cuda_vector.h
                 gpgpu/gpgpu_converter.h
                 math/angles.h
@@ -43,6 +45,7 @@ SET(CPT_H_FILES gpgpu/cuda_aabb.h
                 utilities/timer.h)
 
 SET(CPT_CPP_FILES gpgpu/cuda_aabb.cpp
+                  gpgpu/cuda_aov_output.cpp
                   gpgpu/cuda_acceleration_structure.cpp
                   gpgpu/cuda_bvh.cpp
                   gpgpu/cuda_converter.cpp
@@ -51,6 +54,7 @@ SET(CPT_CPP_FILES gpgpu/cuda_aabb.cpp
                   gpgpu/cuda_triangle.cpp
                   gpgpu/cuda_geometry.cpp
                   gpgpu/cuda_geometry_aggregate.cpp
+                  gpgpu/cuda_image.cpp
                   math/angles.cpp
                   math/distance.cpp
                   math/rotation.cpp
@@ -75,7 +79,9 @@ SET(CPT_CPP_FILES gpgpu/cuda_aabb.cpp
                   utilities/progress_bar.cpp
                   utilities/timer.cpp)
 
-SET(CPT_CU_FILES render/cuda_renderer.cu)
+SET(CPT_CU_FILES render/cuda_renderer.cu
+                 gpgpu/cuda_aov_output.cu
+                 gpgpu/cuda_image.cu)
 
 ADD_LIBRARY(cpt SHARED ${CPT_H_FILES} ${CPT_CPP_FILES} ${CPT_CU_FILES})
 

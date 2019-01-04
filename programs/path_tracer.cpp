@@ -37,6 +37,9 @@ int main(int argc, char** argv) {
 
     // Render.
     cpt::AovOutput output;
+    // TODO: Pull from options.
+    output.initialize(640, 480);
+
     START_TIMER_INFO(create_renderer, "Create renderer...");
     cpt::CudaRenderer rndr(scene);
     END_TIMER(create_renderer);
