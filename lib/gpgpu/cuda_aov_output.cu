@@ -22,8 +22,8 @@ CudaAovOutput::~CudaAovOutput() {
     for (size_t i = 0; i < _num_images; ++i) {
         cuda_delete(_cuda_images[i]);
     }
-    CHECK_CUDA_ERROR(cudaFree(_cuda_images));
-    CHECK_CUDA_ERROR(cudaFree(_active_channels));
+    cudaFree(_cuda_images);
+    cudaFree(_active_channels);
 }
 
 void CudaAovOutput::save(AovOutput& host_output) {

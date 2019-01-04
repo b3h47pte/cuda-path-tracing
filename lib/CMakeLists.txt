@@ -11,6 +11,7 @@ SET(CPT_H_FILES gpgpu/cuda_aabb.h
                 gpgpu/cuda_geometry.h
                 gpgpu/cuda_geometry_aggregate.h
                 gpgpu/cuda_image.h
+                gpgpu/cuda_ray.h
                 gpgpu/math/cuda_vector.h
                 gpgpu/gpgpu_converter.h
                 math/angles.h
@@ -55,6 +56,7 @@ SET(CPT_CPP_FILES gpgpu/cuda_aabb.cpp
                   gpgpu/cuda_geometry.cpp
                   gpgpu/cuda_geometry_aggregate.cpp
                   gpgpu/cuda_image.cpp
+                  gpgpu/cuda_ray.cpp
                   math/angles.cpp
                   math/distance.cpp
                   math/rotation.cpp
@@ -81,7 +83,8 @@ SET(CPT_CPP_FILES gpgpu/cuda_aabb.cpp
 
 SET(CPT_CU_FILES render/cuda_renderer.cu
                  gpgpu/cuda_aov_output.cu
-                 gpgpu/cuda_image.cu)
+                 gpgpu/cuda_image.cu
+                 gpgpu/cuda_ray.cu)
 
 ADD_LIBRARY(cpt SHARED ${CPT_H_FILES} ${CPT_CPP_FILES} ${CPT_CU_FILES})
 
