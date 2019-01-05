@@ -1,9 +1,9 @@
 #include "cuda_renderer.h"
 #include "gpgpu/cuda_ptr.h"
 #include "gpgpu/cuda_ray.h"
+#include "gpgpu/cuda_stream_compaction.h"
 #include "gpgpu/cuda_utils.h"
 #include <thrust/device_vector.h>
-#include <thrust/remove.h>
 
 namespace cpt {
 
@@ -12,20 +12,23 @@ void CudaRenderer::render(AovOutput& output) const {
     // Upon destruction, it will transfer those contents back onto the host.
     CudaAovOutput* cuda_output = cuda_new<CudaAovOutput>(output);
 
+    const size_t num_rays = 100;
+    CudaRay* active_rays = cuda_new_array<CudaRay>(num_rays);
+    CudaRay* end_rays = active_rays + num_rays;
+
     // TODO: Pull from options.
     const int samples_per_pixel = 5;
     for (auto spp = 0; spp < samples_per_pixel; ++spp) {
         // Generate an initial set of rays.
-        thrust::device_vector<CudaRay> active_rays;
-        auto end_it = active_rays.end();
 
         // Send out rays into scene. After they hit something, return and
         // do stream compaction (if enabled) to kill dead rays so we don't
         // do unnecessary work.
-        while (end_it != active_rays.begin()) {
+        while (end_rays != active_rays) {
 
-            end_it = thrust::remove_if(active_rays.begin(), active_rays.end(), 
-            [] CUDA_DEVHOST (const CudaRay& ray) {
+            // Stream compact based on whether or not the ray is dead.
+            end_rays = cuda_stream_compact(active_rays, end_rays,
+            [] CUDA_DEVICE (const CudaRay& ray) {
                 return true;
             });
         }
@@ -33,6 +36,7 @@ void CudaRenderer::render(AovOutput& output) const {
     }
     
     cuda_output->save(output);
+    cuda_delete_array(active_rays, num_rays);
     cuda_delete(cuda_output);
 }
 

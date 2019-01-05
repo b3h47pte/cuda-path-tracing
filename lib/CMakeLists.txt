@@ -12,6 +12,7 @@ SET(CPT_H_FILES gpgpu/cuda_aabb.h
                 gpgpu/cuda_geometry_aggregate.h
                 gpgpu/cuda_image.h
                 gpgpu/cuda_ray.h
+                gpgpu/cuda_stream_compaction.h
                 gpgpu/math/cuda_vector.h
                 gpgpu/gpgpu_converter.h
                 math/angles.h
