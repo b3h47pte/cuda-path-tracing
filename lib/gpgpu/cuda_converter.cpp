@@ -2,6 +2,7 @@
 
 #include "gpgpu/cuda_ptr.h"
 #include "gpgpu/cuda_geometry_aggregate.h"
+#include "gpgpu/cuda_pinhole_perspective_camera.h"
 #include "gpgpu/cuda_triangle.h"
 #include "gpgpu/math/cuda_vector.h"
 
@@ -57,6 +58,17 @@ void CudaConverter::convert(const GeometryAggregate& aggregate) {
     progress.complete();
 
     ptr = cuda_new<CudaGeometryAggregate>(cuda_children);
+    add_to_cache(key, ptr);
+}
+
+void CudaConverter::convert(const PinholePerspectiveCamera& camera) {
+    auto* key = const_cast<PinholePerspectiveCamera*>(&camera);
+    auto* ptr = get_from_cache<CudaCamera>(key);
+    if (ptr) {
+        return;
+    }
+
+    ptr = cuda_new<CudaPinholePerspectiveCamera>(camera);
     add_to_cache(key, ptr);
 }
 

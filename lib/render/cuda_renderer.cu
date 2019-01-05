@@ -11,30 +11,37 @@ void CudaRenderer::render(AovOutput& output) const {
     // CudaAovOutput will transfer the contents of AovOutput for use on the GPU.
     // Upon destruction, it will transfer those contents back onto the host.
     CudaAovOutput* cuda_output = cuda_new<CudaAovOutput>(output);
+    const size_t film_width = output.width();
+    const size_t film_height = output.height();
 
-    const size_t num_rays = 100;
+    // Array of rays to shoot out. Only do one ray per pixel for now.
+    const size_t num_rays = film_width * film_height;
     CudaRay* active_rays = cuda_new_array<CudaRay>(num_rays);
     CudaRay* end_rays = active_rays + num_rays;
 
     // TODO: Pull from options.
     const int samples_per_pixel = 5;
+    const int max_depth = 5;
+
     for (auto spp = 0; spp < samples_per_pixel; ++spp) {
         // Generate an initial set of rays.
+        _cuda_scene->generate_rays(active_rays, film_width, film_height);
 
-        // Send out rays into scene. After they hit something, return and
-        // do stream compaction (if enabled) to kill dead rays so we don't
-        // do unnecessary work.
-        while (end_rays != active_rays) {
+        int depth = 0;
+        while (end_rays != active_rays && depth < max_depth) {
+            // Send out rays into scene and do shading computations if necessary.
 
             // Stream compact based on whether or not the ray is dead.
             end_rays = cuda_stream_compact(active_rays, end_rays,
             [] CUDA_DEVICE (const CudaRay& ray) {
                 return true;
             });
-        }
 
+            ++depth;
+        }
     }
     
+    CHECK_CUDA_ERROR(cudaDeviceSynchronize());
     cuda_output->save(output);
     cuda_delete_array(active_rays, num_rays);
     cuda_delete(cuda_output);

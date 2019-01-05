@@ -1,6 +1,7 @@
 #include "cuda_scene.h"
 #include "gpgpu/cuda_bvh.h"
 #include "gpgpu/cuda_converter.h"
+#include "gpgpu/cuda_camera.h"
 #include "gpgpu/cuda_geometry.h"
 #include "gpgpu/cuda_ptr.h"
 #include "gpgpu/cuda_utils.h"
@@ -36,12 +37,24 @@ std::vector<CudaGeometry*> extract_cuda_geometry_from_scene(const ScenePtr& scen
 
 }
 
-CudaScene::CudaScene(const ScenePtr& scene) {
+CudaScene::CudaScene(const ScenePtr& scene, const std::string& camera_id) {
     _accel_structure = cuda_new<CudaBVH>(extract_cuda_geometry_from_scene(scene, true));
+
+    CHECK_AND_THROW_ERROR(scene->has_camera(camera_id), "Invalid camera ID for render.");
+    CudaConverter converter;
+
+    const auto& camera = scene->camera(camera_id);
+    camera->convert(converter);
+    _render_camera = converter.get_from_cache<CudaCamera>(camera.get());
 }
 
 CudaScene::~CudaScene() {
     cuda_delete(_accel_structure);
+    cuda_delete(_render_camera);
+}
+
+void CudaScene::generate_rays(CudaRay* rays, size_t width, size_t height) const {
+    _render_camera->generate_rays(rays, width, height);
 }
 
 }

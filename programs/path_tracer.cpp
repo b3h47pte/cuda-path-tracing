@@ -37,11 +37,13 @@ int main(int argc, char** argv) {
 
     // Render.
     cpt::AovOutput output;
+
     // TODO: Pull from options.
     output.initialize(640, 480);
+    const std::string render_camera = "main";
 
     START_TIMER_INFO(create_renderer, "Create renderer...");
-    cpt::CudaRenderer rndr(scene);
+    cpt::CudaRenderer rndr(scene, render_camera);
     END_TIMER(create_renderer);
 
     START_TIMER_INFO(render, "Render...");

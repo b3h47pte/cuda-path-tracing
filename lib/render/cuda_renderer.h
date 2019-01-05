@@ -13,7 +13,7 @@ namespace cpt {
 class CudaRenderer
 {
 public:
-    CudaRenderer(const ScenePtr& scene);
+    CudaRenderer(const ScenePtr& scene, const std::string& camera_id);
 
     CUDA_HOST void render(AovOutput& output) const;
 private:

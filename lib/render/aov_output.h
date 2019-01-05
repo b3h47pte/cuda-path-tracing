@@ -25,6 +25,9 @@ public:
     const boost::gil::rgb32_image_t& image(Channels channel) const;
     boost::gil::rgb32_image_t& image(Channels channel);
 
+    size_t width() const { return _width; }
+    size_t height() const { return _height; }
+
 private:
     size_t _width{0};
     size_t _height{0};

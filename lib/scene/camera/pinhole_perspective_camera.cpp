@@ -1,4 +1,5 @@
 #include "pinhole_perspective_camera.h"
+#include "gpgpu/gpgpu_converter.h"
 
 namespace cpt {
 
@@ -14,6 +15,10 @@ PinholePerspectiveCamera::PinholePerspectiveCamera(
     _near_z(near_z),
     _far_z(far_z)
 {
+}
+
+void PinholePerspectiveCamera::convert(GpgpuConverter& converter) const {
+    converter.convert(*this);
 }
 
 }

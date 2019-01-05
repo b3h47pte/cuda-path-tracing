@@ -7,6 +7,7 @@ namespace cpt {
 
 class Triangle;
 class GeometryAggregate;
+class PinholePerspectiveCamera;
 
 class GpgpuConverter
 {
@@ -15,6 +16,7 @@ public:
 
     virtual void convert(const Triangle& triangle) = 0;
     virtual void convert(const GeometryAggregate& aggregate) = 0;
+    virtual void convert(const PinholePerspectiveCamera& camera) = 0;
 
     void add_to_cache(void* key, void* value) {
         _cache[key] = value;

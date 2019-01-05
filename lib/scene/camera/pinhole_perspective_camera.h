@@ -23,6 +23,7 @@ public:
     const Distance& near_z() const { return _near_z; }
     const Distance& far_z() const { return _far_z; }
 
+    void convert(GpgpuConverter& converter) const override;
 private:
     Angle _horizontal_fov;
     float _film_aspect_ratio;

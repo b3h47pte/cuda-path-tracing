@@ -19,7 +19,6 @@ public:
     virtual bool is_primitive() const { return false; }
     virtual PrimitiveType primitive_type() const { return PrimitiveType::None; }
 
-    virtual void convert(GpgpuConverter& converter) const = 0;
 };
 
 using GeometryPtr = std::shared_ptr<Geometry>;
