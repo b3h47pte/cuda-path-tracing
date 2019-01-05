@@ -16,8 +16,8 @@ void AovOutput::add_channel(Channels channel) {
     CHECK_AND_THROW_ERROR(_width > 0 && _height > 0, "Need to initialize AovOutput before adding channel.");
     switch (channel) {
     case Channels::FinalImage:
-        _aovs[channel] = boost::gil::rgb32_image_t(_width, _height);
-        boost::gil::fill_pixels(boost::gil::view(_aovs[channel]), boost::gil::rgb32_image_t::value_type());
+        _aovs[channel] = boost::gil::rgb32f_image_t(_width, _height);
+        boost::gil::fill_pixels(boost::gil::view(_aovs[channel]), boost::gil::rgb32f_image_t::value_type());
         break;
     default:
         THROW_ERROR("Unsupported channel type.");
@@ -41,11 +41,11 @@ std::vector<AovOutput::Channels> AovOutput::active_channels() const {
     return channels;
 }
 
-const boost::gil::rgb32_image_t& AovOutput::image(Channels channel) const {
+const boost::gil::rgb32f_image_t& AovOutput::image(Channels channel) const {
     return _aovs.at(channel);
 }
 
-boost::gil::rgb32_image_t& AovOutput::image(Channels channel) {
+boost::gil::rgb32f_image_t& AovOutput::image(Channels channel) {
     return _aovs[channel];
 }
 

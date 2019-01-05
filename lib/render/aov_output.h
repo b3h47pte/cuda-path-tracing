@@ -22,8 +22,8 @@ public:
     void save_channel_to_file(Channels channel, const std::string& filename) const;
 
     std::vector<AovOutput::Channels> active_channels() const;
-    const boost::gil::rgb32_image_t& image(Channels channel) const;
-    boost::gil::rgb32_image_t& image(Channels channel);
+    const boost::gil::rgb32f_image_t& image(Channels channel) const;
+    boost::gil::rgb32f_image_t& image(Channels channel);
 
     size_t width() const { return _width; }
     size_t height() const { return _height; }
@@ -32,7 +32,7 @@ private:
     size_t _width{0};
     size_t _height{0};
 
-    std::unordered_map<Channels, boost::gil::rgb32_image_t, EnumHash> _aovs;
+    std::unordered_map<Channels, boost::gil::rgb32f_image_t, EnumHash> _aovs;
 };
 
 }

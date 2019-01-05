@@ -31,4 +31,10 @@ void initialize_cuda() {
     std::cout << "===========================================================" << std::endl;
 }
 
+void compute_blocks_threads(int& blocks, int& threads, size_t total) {
+    constexpr int threadsPerBlock = 256;
+    blocks = (total + threadsPerBlock - 1) / threadsPerBlock;
+    threads = threadsPerBlock;
+}
+
 }

@@ -12,6 +12,7 @@ SET(CPT_H_FILES gpgpu/cuda_aabb.h
                 gpgpu/cuda_geometry.h
                 gpgpu/cuda_geometry_aggregate.h
                 gpgpu/cuda_image.h
+                gpgpu/cuda_path_integrator.h
                 gpgpu/cuda_pinhole_perspective_camera.h
                 gpgpu/cuda_ray.h
                 gpgpu/cuda_stream_compaction.h
@@ -88,6 +89,7 @@ SET(CPT_CPP_FILES gpgpu/cuda_aabb.cpp
 SET(CPT_CU_FILES render/cuda_renderer.cu
                  gpgpu/cuda_aov_output.cu
                  gpgpu/cuda_image.cu
+                 gpgpu/cuda_path_integrator.cu
                  gpgpu/cuda_pinhole_perspective_camera.cu
                  gpgpu/cuda_ray.cu)
 

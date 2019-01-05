@@ -2,7 +2,9 @@
 
 namespace cpt {
 
-CudaAovOutput::CudaAovOutput(AovOutput& host_output) {
+CudaAovOutput::CudaAovOutput(AovOutput& host_output):
+    _width(host_output.width()),
+    _height(host_output.height()) {
     auto active_channels = host_output.active_channels();
     _num_images = active_channels.size();
 
@@ -31,6 +33,11 @@ void CudaAovOutput::save(AovOutput& host_output) {
         const AovOutput::Channels channel = _active_channels[i];
         copy_image_from_cuda(_cuda_images[i], channel, host_output.image(channel));
     }
+}
+
+void CudaAovOutput::get_xy_from_flat_index(size_t& x, size_t& y, size_t idx) const {
+    x = idx % _width;
+    y = idx / _width;
 }
 
 }

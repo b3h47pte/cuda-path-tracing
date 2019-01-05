@@ -37,5 +37,6 @@
 namespace cpt {
 
 void initialize_cuda();
+void compute_blocks_threads(int& blocks, int& threads, size_t total);
 
 }
