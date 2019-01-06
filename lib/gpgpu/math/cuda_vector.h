@@ -103,7 +103,7 @@ private:
 };
 
 template<typename T,int Dim>
-CUDA_DEVHOST CudaVector<T,Dim> eigen_vector_to_cuda(const Eigen::Ref<const Eigen::Matrix<T,Dim,1>>& vec) {
+CUDA_HOST CudaVector<T,Dim> eigen_vector_to_cuda(const Eigen::Ref<const Eigen::Matrix<T,Dim,1>>& vec) {
     CudaVector<T,Dim> ret(vec.data());
     return ret;
 }

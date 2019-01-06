@@ -4,6 +4,7 @@
 #include "gpgpu/cuda_bvh.h"
 #include "gpgpu/cuda_ray.h"
 #include "gpgpu/cuda_triangle.h"
+#include "gpgpu/math/cuda_affine_transform.h"
 #include "gpgpu/math/cuda_vector.h"
 
 namespace cpt {
@@ -26,8 +27,9 @@ CUDA_DEVHOST bool ray_triangle_intersect(const CudaRay* ray, const CudaTriangle*
     // D: ray direction
     // t: amount travelled along ray until intersection
     // TODO: Transform to object space.
-    const CudaVector<float,3> O = ray->origin();
-    const CudaVector<float,3> D = ray->direction();
+    const CudaAffineTransform& world_to_object_xform = triangle->world_to_object_xform();
+    const CudaVector<float,3> O = world_to_object_xform.transform(ray->origin(), true);
+    const CudaVector<float,3> D = world_to_object_xform.transform(ray->direction(), false);
 
     // The triangle equation given barycentric coordinates (u,v) is:
     // T(u,v) = (1 - u - v)V0 + uV1 + vV2

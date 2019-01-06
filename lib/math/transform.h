@@ -35,6 +35,9 @@ public:
     Transform& operator*=(const Transform& other);
     Transform operator*(const Transform& other) const;
 
+    Transform inverse() const;
+    Eigen::Matrix4f to_matrix() const;
+
 private:
     // Scale, rotation, translation.
     // Keep rotation in matrix mode since I don't particularly care for supporting

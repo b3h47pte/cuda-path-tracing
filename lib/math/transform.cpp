@@ -71,4 +71,20 @@ Transform Transform::from_transform_matrix(const Eigen::Matrix4f& matrix) {
     return xform;
 }
 
+Transform Transform::inverse() const {
+    Eigen::Matrix4f mat = to_matrix();
+    Eigen::Matrix4f new_mat = mat;
+    new_mat.block(0,0,3,3) = mat.block(0,0,3,3).inverse();
+    new_mat.block(0,3,3,1) = -new_mat.block(0,0,3,3) * mat.block(0,3,3, 1);
+    return Transform::from_transform_matrix(new_mat);
+}
+
+Eigen::Matrix4f Transform::to_matrix() const {
+    Eigen::Matrix4f matrix;
+    matrix.setIdentity();
+    matrix.block(0,0,3,3) = _rotation * _scale.asDiagonal();
+    matrix.block(0,3,3,1) = _translation;
+    return matrix;
+}
+
 }

@@ -19,6 +19,8 @@ SET(CPT_H_FILES gpgpu/cuda_aabb.h
                 gpgpu/cuda_triangle.h
                 gpgpu/cuda_utils.h
                 gpgpu/cuda_uniform_sampler.h
+                gpgpu/math/cuda_affine_transform.h
+                gpgpu/math/cuda_matrix.h
                 gpgpu/math/cuda_vector.h
                 gpgpu/gpgpu_converter.h
                 math/angles.h
@@ -67,6 +69,7 @@ SET(CPT_CPP_FILES gpgpu/cuda_aabb.cpp
                   gpgpu/cuda_object.cpp
                   gpgpu/cuda_pinhole_perspective_camera.cpp
                   gpgpu/cuda_ray.cpp
+                  gpgpu/math/cuda_affine_transform.cpp
                   math/angles.cpp
                   math/distance.cpp
                   math/rotation.cpp
@@ -100,7 +103,8 @@ SET(CPT_CU_FILES render/cuda_renderer.cu
                  gpgpu/cuda_ray.cu
                  gpgpu/cuda_sampler.cu
                  gpgpu/cuda_uniform_sampler.cu
-                 gpgpu/cuda_utils.cu)
+                 gpgpu/cuda_utils.cu
+                 gpgpu/math/cuda_affine_transform.cu)
 
 ADD_LIBRARY(cpt SHARED ${CPT_H_FILES} ${CPT_CPP_FILES} ${CPT_CU_FILES})
 
