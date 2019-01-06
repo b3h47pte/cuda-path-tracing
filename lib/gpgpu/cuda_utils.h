@@ -9,7 +9,7 @@
 #define CUDA_HOST __host__
 #define CUDA_DEVICE __device__
 #define CUDA_DEVHOST __host__ __device__
-#define CUDA_GLOBAL __globl__
+#define CUDA_GLOBAL __global__
 #else
 #define CUDA_HOST
 #define CUDA_DEVICE
@@ -21,7 +21,7 @@
 #define CHECK_CUDA_ERROR(x) \
     {auto err = x; \
     if (err != cudaSuccess) { \
-        THROW_ERROR("Failed to run CUDA command."); \
+        THROW_ERROR("Failed to run CUDA command:" << cudaGetErrorString(err)); \
     }}
 
 #define CHECK_CUBLAS_ERROR(x) \
@@ -38,5 +38,9 @@ namespace cpt {
 
 void initialize_cuda();
 void compute_blocks_threads(int& blocks, int& threads, size_t total);
+void compute_blocks_threads_2d(dim3& blocks, dim3& threads, size_t total_x, size_t total_y);
+
+CUDA_DEVICE int get_cuda_flat_block_index();
+CUDA_DEVICE int get_cuda_flat_thread_index();
 
 }

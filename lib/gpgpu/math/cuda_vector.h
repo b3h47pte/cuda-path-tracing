@@ -45,12 +45,57 @@ public:
         return *this;
     }
 
+    CUDA_DEVHOST static CudaVector Ones() {
+        CudaVector vec;
+        for (auto i = 0; i < Dim; ++i) {
+            vec[i] = T(1.0);
+        }
+        return vec;
+    }
+
+    CUDA_DEVHOST static CudaVector Constant(T value) {
+        CudaVector vec;
+        for (auto i = 0; i < Dim; ++i) {
+            vec[i] = value;
+        }
+        return vec;
+    }
+
     CUDA_DEVHOST const T& operator[](size_t idx) const {
         return _data[idx];
     }
 
     CUDA_DEVHOST T& operator[](size_t idx) {
         return _data[idx];
+    }
+
+    CUDA_DEVHOST float norm() const {
+        float ret = 0.f;
+        for (auto i = 0; i < Dim; ++i) {
+            ret += _data[i] * _data[i];
+        }
+        return sqrt(ret);
+    }
+
+    CUDA_DEVHOST void normalize() {
+        const float mag = norm();
+        for (auto i = 0; i < Dim; ++i) {
+            _data[i] /= mag;
+        }
+    }
+
+    CUDA_DEVHOST CudaVector& operator+=(const CudaVector& other) {
+        for (auto i = 0; i < Dim; ++i) {
+            _data[i] += other[i];
+        }
+        return *this;
+    }
+
+    CUDA_DEVHOST CudaVector& operator-=(const CudaVector& other) {
+        for (auto i = 0; i < Dim; ++i) {
+            _data[i] -= other[i];
+        }
+        return *this;
     }
 
 private:
@@ -83,10 +128,8 @@ CUDA_DEVHOST CudaVector<T,Dim> max(const CudaVector<T,Dim>& a, const CudaVector<
 
 template<typename T,int Dim>
 CUDA_DEVHOST CudaVector<T,Dim> operator+(const CudaVector<T,Dim>& a, const CudaVector<T,Dim>& b) {
-    CudaVector<T,Dim> ret;
-    for (int i = 0; i < Dim; ++i) {
-        ret[i] = a[i] + b[i];
-    }
+    CudaVector<T,Dim> ret = a;
+    ret += b;
     return ret;
 }
 

@@ -19,6 +19,27 @@ T* cuda_new_array(size_t sz) {
     return arr;
 }
 
+#ifdef __CUDACC__
+template<typename T>
+CUDA_GLOBAL void cuda_initialize_array_device(T* data) {
+    const int idx = get_cuda_flat_thread_index();
+    new (data + idx) T();
+}
+
+template<typename T>
+T* cuda_new_array_device(size_t sz) {
+    void* mem;
+    CHECK_CUDA_ERROR(cudaMalloc(&mem, sizeof(T) * sz));
+
+    int blocks, threads;
+    compute_blocks_threads(blocks, threads, sz);
+
+    T* arr = reinterpret_cast<T*>(mem);
+    cuda_initialize_array_device<T><<<blocks, threads>>>(arr);
+    return arr;
+}
+#endif
+
 template<typename T>
 void cuda_delete_array(T* arr, size_t sz) {
     if (!arr) {

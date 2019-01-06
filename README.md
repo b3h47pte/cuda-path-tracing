@@ -2,7 +2,7 @@
 
 Note that the version requirements are what I have tested with, lower versions may (or may not) work.
 
-* CUDA 9.2+
+* CUDA 9.2+ (cuBLAS, cuRAND)
 * Boost 1.68+
 * Eigen 3.3+
 * Libtiff

@@ -32,9 +32,17 @@ void initialize_cuda() {
 }
 
 void compute_blocks_threads(int& blocks, int& threads, size_t total) {
-    constexpr int threadsPerBlock = 256;
-    blocks = (total + threadsPerBlock - 1) / threadsPerBlock;
-    threads = threadsPerBlock;
+    constexpr int threads_per_block = 256;
+    blocks = (total + threads_per_block - 1) / threads_per_block;
+    threads = threads_per_block;
+}
+
+void compute_blocks_threads_2d(dim3& blocks, dim3& threads, size_t total_x, size_t total_y) {
+    constexpr int threads_per_block_x = 16;
+    constexpr int threads_per_block_y = 16;
+    blocks = dim3((total_x + threads_per_block_x - 1) / threads_per_block_x,
+                  (total_y + threads_per_block_y - 1) / threads_per_block_y);
+    threads = dim3(threads_per_block_x, threads_per_block_y);
 }
 
 }

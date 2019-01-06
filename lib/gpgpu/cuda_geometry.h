@@ -1,12 +1,13 @@
 #pragma once
 
 #include "gpgpu/cuda_aabb.h"
+#include "gpgpu/cuda_object.h"
 #include "gpgpu/math/cuda_vector.h"
 #include <vector>
 
 namespace cpt {
 
-class CudaGeometry
+class CudaGeometry: public CudaObject
 {
 public:
     virtual ~CudaGeometry() = default;

@@ -16,6 +16,10 @@ public:
     const Transform& object_to_world_xform() const { return _object_to_world_xform; }
 
     virtual void convert(GpgpuConverter& converter) const {}
+
+    Eigen::Vector3f world_up_dir() const;
+    Eigen::Vector3f world_right_dir() const;
+    Eigen::Vector3f world_forward_dir() const;
 private:
     Transform _object_to_world_xform;
 };

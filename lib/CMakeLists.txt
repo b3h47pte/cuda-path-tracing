@@ -7,15 +7,17 @@ SET(CPT_H_FILES gpgpu/cuda_aabb.h
                 gpgpu/cuda_camera.h
                 gpgpu/cuda_converter.h
                 gpgpu/cuda_utils.h
+                gpgpu/cuda_sampler.h
                 gpgpu/cuda_scene.h
                 gpgpu/cuda_triangle.h
                 gpgpu/cuda_geometry.h
                 gpgpu/cuda_geometry_aggregate.h
                 gpgpu/cuda_image.h
+                gpgpu/cuda_object.h
                 gpgpu/cuda_path_integrator.h
                 gpgpu/cuda_pinhole_perspective_camera.h
                 gpgpu/cuda_ray.h
-                gpgpu/cuda_stream_compaction.h
+                gpgpu/cuda_uniform_sampler.h
                 gpgpu/math/cuda_vector.h
                 gpgpu/gpgpu_converter.h
                 math/angles.h
@@ -55,11 +57,13 @@ SET(CPT_CPP_FILES gpgpu/cuda_aabb.cpp
                   gpgpu/cuda_bvh.cpp
                   gpgpu/cuda_converter.cpp
                   gpgpu/cuda_utils.cpp
+                  gpgpu/cuda_sampler.cpp
                   gpgpu/cuda_scene.cpp
                   gpgpu/cuda_triangle.cpp
                   gpgpu/cuda_geometry.cpp
                   gpgpu/cuda_geometry_aggregate.cpp
                   gpgpu/cuda_image.cpp
+                  gpgpu/cuda_object.cpp
                   gpgpu/cuda_pinhole_perspective_camera.cpp
                   gpgpu/cuda_ray.cpp
                   math/angles.cpp
@@ -91,7 +95,10 @@ SET(CPT_CU_FILES render/cuda_renderer.cu
                  gpgpu/cuda_image.cu
                  gpgpu/cuda_path_integrator.cu
                  gpgpu/cuda_pinhole_perspective_camera.cu
-                 gpgpu/cuda_ray.cu)
+                 gpgpu/cuda_ray.cu
+                 gpgpu/cuda_sampler.cu
+                 gpgpu/cuda_uniform_sampler.cu
+                 gpgpu/cuda_utils.cu)
 
 ADD_LIBRARY(cpt SHARED ${CPT_H_FILES} ${CPT_CPP_FILES} ${CPT_CU_FILES})
 

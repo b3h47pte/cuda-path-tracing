@@ -24,7 +24,8 @@ public:
     const Distance& far_z() const { return _far_z; }
 
     void convert(GpgpuConverter& converter) const override;
-private:
+
+protected:
     Angle _horizontal_fov;
     float _film_aspect_ratio;
     Distance _focal_length;

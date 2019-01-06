@@ -8,6 +8,7 @@ namespace cpt {
 class CudaAccelerationStructure;
 class CudaCamera;
 class CudaRay;
+class CudaSampler;
 
 class CudaScene
 {
@@ -17,7 +18,7 @@ public:
 
     const CudaCamera* render_camera() const { return _render_camera; }
 
-    void generate_rays(CudaRay* rays, size_t width, size_t height) const;
+    void generate_rays(CudaSampler* samplers, CudaRay* rays, size_t width, size_t height) const;
 
 private: 
     CudaAccelerationStructure* _accel_structure;

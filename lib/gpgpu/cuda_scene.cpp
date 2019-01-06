@@ -53,8 +53,8 @@ CudaScene::~CudaScene() {
     cuda_delete(_render_camera);
 }
 
-void CudaScene::generate_rays(CudaRay* rays, size_t width, size_t height) const {
-    _render_camera->generate_rays(rays, width, height);
+void CudaScene::generate_rays(CudaSampler* samplers, CudaRay* rays, size_t width, size_t height) const {
+    _render_camera->generate_rays(samplers, rays, width, height);
 }
 
 }

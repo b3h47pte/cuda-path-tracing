@@ -37,6 +37,7 @@ void CudaConverter::convert(const Triangle& triangle) {
     }
 
     ptr = cuda_new<CudaTriangle>(positions, normals, uvs);
+    ptr->bake_from_object(triangle);
     add_to_cache(key, ptr);
 }
 
@@ -58,6 +59,7 @@ void CudaConverter::convert(const GeometryAggregate& aggregate) {
     progress.complete();
 
     ptr = cuda_new<CudaGeometryAggregate>(cuda_children);
+    ptr->bake_from_object(aggregate);
     add_to_cache(key, ptr);
 }
 
@@ -69,6 +71,7 @@ void CudaConverter::convert(const PinholePerspectiveCamera& camera) {
     }
 
     ptr = cuda_new<CudaPinholePerspectiveCamera>(camera);
+    ptr->bake_from_object(camera);
     add_to_cache(key, ptr);
 }
 
