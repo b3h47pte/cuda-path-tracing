@@ -16,7 +16,7 @@ CudaBVH::CudaBVH(
     size_t max_num_children,
     MemoryOwnership ownership,
     size_t split_axis):
-    CudaAccelerationStructure(cuda_geom, ownership),
+    CudaAccelerationStructure(Type::BVH, cuda_geom, ownership),
     _max_num_children(max_num_children) {
 
     // Check if this node should be a leaf node.

@@ -179,4 +179,22 @@ CUDA_DEVHOST CudaVector<T,Dim> operator/(Scalar scalar, const CudaVector<T,Dim>&
     return ret;
 }
 
+template<typename T,int Dim>
+CUDA_DEVHOST float dot(const CudaVector<T,Dim>& a, const CudaVector<T,Dim>& b) {
+    float sum = 0.f;
+    for (auto i = 0; i < Dim; ++i) {
+        sum += a[i] * b[i];
+    }
+    return sum;
+}
+
+template<typename T>
+CUDA_DEVHOST CudaVector<T,3> cross(const CudaVector<T,3>& a, const CudaVector<T,3>& b) {
+    CudaVector<T,3> ret;
+    ret[0] = a[1] * b[2] - a[2] * b[1];
+    ret[1] = a[2] * b[0] - a[0] * b[2];
+    ret[2] = a[0] * b[1] - a[1] * b[0];
+    return ret;
+}
+
 }

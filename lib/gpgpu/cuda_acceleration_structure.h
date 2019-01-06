@@ -11,6 +11,7 @@ class CudaAccelerationStructure: public CudaGeometry
 {
 public:
     CudaAccelerationStructure(
+        Type type,
         const std::vector<CudaGeometry*>& cuda_geom,
         MemoryOwnership ownership = MemoryOwnership::OWN);
     ~CudaAccelerationStructure();

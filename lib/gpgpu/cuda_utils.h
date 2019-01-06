@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cublas_v2.h>
 #include <cuda_runtime.h>
 #include "utilities/error.h"
 #include <iostream>
@@ -33,6 +32,8 @@
 #define CHECK_CUDA_ERROR(x) x
 #define CHECK_CUBLAS_ERROR(x) x
 #endif
+
+#define CUDA_EPSILON 1e-6
 
 namespace cpt {
 

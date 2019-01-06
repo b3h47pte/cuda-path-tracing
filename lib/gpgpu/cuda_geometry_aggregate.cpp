@@ -7,6 +7,7 @@ namespace cpt {
 CudaGeometryAggregate::CudaGeometryAggregate(
     const std::vector<CudaGeometry*>& children,
     MemoryOwnership ownership):
+    CudaGeometry(Type::Aggregate),
     _ownership(ownership),
     _num_children(children.size()) {
     CHECK_CUDA_ERROR(cudaMallocManaged(&_children, sizeof(CudaGeometry*) * children.size()));

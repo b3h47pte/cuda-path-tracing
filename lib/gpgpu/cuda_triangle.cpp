@@ -7,7 +7,8 @@ namespace cpt {
 CudaTriangle::CudaTriangle(
     const std::vector<CudaVector<float,3>>& vertices,
     const std::vector<CudaVector<float,3>>& normals,
-    const std::vector<CudaVector<float,2>>& uvs) {
+    const std::vector<CudaVector<float,2>>& uvs):
+    CudaGeometry(Type::Triangle) {
 
     CHECK_AND_THROW_ERROR(vertices.size() == 3, "CudaTriangle needs three vertices.");
     CHECK_AND_THROW_ERROR(normals.size() == 3, "CudaTriangle needs three normals.");

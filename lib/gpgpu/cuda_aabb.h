@@ -1,5 +1,6 @@
 #pragma once
 
+#include "gpgpu/cuda_utils.h"
 #include "gpgpu/math/cuda_vector.h"
 
 namespace cpt {
@@ -10,9 +11,9 @@ public:
     void expand(const CudaVector<float,3>& other);
     void expand(const CudaAABB& other);
 
-    const CudaVector<float,3>& centroid() const { return _centroid; }
-    const CudaVector<float,3>& min_corner() const { return _min_corner; }
-    const CudaVector<float,3>& max_corner() const { return _max_corner; }
+    CUDA_DEVHOST const CudaVector<float,3>& centroid() const { return _centroid; }
+    CUDA_DEVHOST const CudaVector<float,3>& min_corner() const { return _min_corner; }
+    CUDA_DEVHOST const CudaVector<float,3>& max_corner() const { return _max_corner; }
 
 private:
     void update_centroid();

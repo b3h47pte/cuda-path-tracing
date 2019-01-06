@@ -6,17 +6,18 @@ SET(CPT_H_FILES gpgpu/cuda_aabb.h
                 gpgpu/cuda_bvh.h
                 gpgpu/cuda_camera.h
                 gpgpu/cuda_converter.h
-                gpgpu/cuda_utils.h
-                gpgpu/cuda_sampler.h
-                gpgpu/cuda_scene.h
-                gpgpu/cuda_triangle.h
                 gpgpu/cuda_geometry.h
                 gpgpu/cuda_geometry_aggregate.h
                 gpgpu/cuda_image.h
+                gpgpu/cuda_intersection.h
                 gpgpu/cuda_object.h
                 gpgpu/cuda_path_integrator.h
                 gpgpu/cuda_pinhole_perspective_camera.h
                 gpgpu/cuda_ray.h
+                gpgpu/cuda_sampler.h
+                gpgpu/cuda_scene.h
+                gpgpu/cuda_triangle.h
+                gpgpu/cuda_utils.h
                 gpgpu/cuda_uniform_sampler.h
                 gpgpu/math/cuda_vector.h
                 gpgpu/gpgpu_converter.h
@@ -93,6 +94,7 @@ SET(CPT_CPP_FILES gpgpu/cuda_aabb.cpp
 SET(CPT_CU_FILES render/cuda_renderer.cu
                  gpgpu/cuda_aov_output.cu
                  gpgpu/cuda_image.cu
+                 gpgpu/cuda_intersection.cu
                  gpgpu/cuda_path_integrator.cu
                  gpgpu/cuda_pinhole_perspective_camera.cu
                  gpgpu/cuda_ray.cu
@@ -107,7 +109,6 @@ TARGET_INCLUDE_DIRECTORIES(cpt PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 # CUDA
 TARGET_INCLUDE_DIRECTORIES(cpt SYSTEM PUBLIC ${CUDA_INCLUDE_DIRS} )
 TARGET_LINK_LIBRARIES(cpt ${CUDA_LIBRARIES})
-CUDA_ADD_CUBLAS_TO_TARGET(cpt)
 
 # Boost
 TARGET_INCLUDE_DIRECTORIES(cpt SYSTEM PUBLIC ${Boost_INCLUDE_DIRS})

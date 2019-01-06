@@ -5,8 +5,10 @@
 namespace cpt {
 
 CudaAccelerationStructure::CudaAccelerationStructure(
+    Type type,
     const std::vector<CudaGeometry*>& cuda_geom,
     MemoryOwnership ownership):
+    CudaGeometry(type),
     _aggregate(cuda_geom, ownership) {
     set_aabb(_aggregate.bounding_box());
 }

@@ -1,6 +1,8 @@
 #include "cuda_path_integrator.h"
-#include "gpgpu/math/cuda_vector.h"
+#include "gpgpu/cuda_acceleration_structure.h"
+#include "gpgpu/cuda_intersection.h"
 #include "gpgpu/cuda_utils.h"
+#include "gpgpu/math/cuda_vector.h"
 
 namespace cpt {
 namespace {
@@ -10,8 +12,17 @@ __global__ void path_trace(CudaRay* rays, const CudaScene* scene, size_t sampleI
     size_t x, y;
     output->get_xy_from_flat_index(x, y, pixelIdx);
 
+    CudaRay& ray = rays[pixelIdx];
+
+    // See if we intersect anything in the scene.
+    CudaIntersection intersection;
+    if (!ray_geometry_intersect(&ray, scene->accel_structure(), &intersection)) {
+        ray.set_alive(false);
+        return;
+    }
+
     CudaVector<float, 3> rgb;
-    rgb[pixelIdx % 3] = 1.f;
+    rgb[intersection.hit_geometry->id() % 3] = 1.f;
 
     // Output.
     for (size_t imgIdx = 0; imgIdx < output->num_images(); ++imgIdx) {

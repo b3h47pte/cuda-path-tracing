@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gpgpu/cuda_geometry.h"
+#include "gpgpu/cuda_utils.h"
 #include "gpgpu/math/cuda_vector.h"
 #include <vector>
 
@@ -13,6 +14,8 @@ public:
         const std::vector<CudaVector<float,3>>& vertices,
         const std::vector<CudaVector<float,3>>& normals,
         const std::vector<CudaVector<float,2>>& uvs);
+
+    CUDA_DEVHOST const CudaVector<float,3>& vertex(size_t idx) const { return _vertices[idx]; }
 
 private:
     CudaAABB create_aabb() const;
