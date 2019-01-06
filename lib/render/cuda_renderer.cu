@@ -31,7 +31,6 @@ void CudaRenderer::render(AovOutput& output) const {
         // Generate an initial set of rays.
         _cuda_scene->generate_rays(samplers, active_rays, film_width, film_height);
 
-        break;
         size_t depth = 0;
         while (end_rays != active_rays && depth < max_depth) {
             // Send out rays into scene and do shading computations when necessary.
