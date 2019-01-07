@@ -1,0 +1,33 @@
+{
+    "type": "root",
+    "children": [
+        {
+            "type": "mesh",
+            "filename": "Cube/cube.obj"
+        },
+        {
+            "type": "xform",
+            "object": {
+                "translation": [0.0, 0.0, 2.885],
+                "scale": [1.0, 1.0, 1.0],
+                "rotation": [0.0, 0.0, 0.0],
+                "rotation_type": "euler_xyz"
+            },
+            "children": [
+                {
+                    "type": "camera",
+                    "id": "main",
+                    "object": {
+                        "type": "pinhole_perspective",
+                        "horizontal_fov": 54.43,
+                        "film_aspect_ratio": 1.333,
+                        "focal_length_mm": 35.0,
+                        "near_z": 0.001,
+                        "far_z": 100.0
+                    }
+                }
+            ]
+        }
+    ]
+}
+
