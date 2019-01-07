@@ -24,16 +24,21 @@ public:
     virtual bool unpacked_has_self() const { return true; }
 
     CUDA_DEVHOST const CudaAABB& bounding_box() const { return _aabb; }
-    CUDA_DEVHOST const CudaVector<float,3>& centroid() const { return _aabb.centroid(); }
+    CUDA_DEVHOST const CudaAABB& world_space_bounding_box() const { return _world_space_aabb; }
+    
     CUDA_DEVHOST Type type() const { return _type; }
     CUDA_DEVHOST size_t id() const { return _id; }
 
+    void bake_from_object(const Object& object) override;
+
 protected:
     void set_aabb(const CudaAABB& aabb) { _aabb = aabb; }
+    void set_world_space_aabb(const CudaAABB& aabb) { _world_space_aabb = aabb; }
 
 private:
     Type     _type;
     CudaAABB _aabb;
+    CudaAABB _world_space_aabb;
     size_t   _id;
 };
 

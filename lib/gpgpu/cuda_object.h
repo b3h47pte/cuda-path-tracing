@@ -20,7 +20,7 @@ public:
     CUDA_DEVHOST const CudaVector<float,3>& world_right_dir() const { return _world_right_dir; }
     CUDA_DEVHOST const CudaVector<float,3>& world_forward_dir() const { return _world_forward_dir; }
 
-    void bake_from_object(const Object& object);
+    virtual void bake_from_object(const Object& object);
 
 private:
     CudaVector<float,3> _position;

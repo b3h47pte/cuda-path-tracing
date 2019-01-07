@@ -19,12 +19,26 @@ public:
     CUDA_DEVHOST bool is_alive() const { return _alive; }
     CUDA_DEVHOST void set_alive(bool b) { _alive = b; }
 
+    CUDA_DEVHOST int dbg_x_idx() const { return _x_idx; }
+    CUDA_DEVHOST void dbg_set_x_idx(int idx) { _x_idx = idx; }
+
+    CUDA_DEVHOST int dbg_y_idx() const { return _y_idx; }
+    CUDA_DEVHOST void dbg_set_y_idx(int idx) { _y_idx = idx; }
+
+    CUDA_DEVHOST int dbg_flat_idx() const { return _flat_idx; }
+    CUDA_DEVHOST void dbg_set_flat_idx(int idx) { _flat_idx = idx; }
+
 private:
     CudaVector<float,3> _origin;
     CudaVector<float,3> _direction;
     bool                _alive{true};
 
     float               _max_t{0.f};
+
+    // Debug info.
+    int                 _x_idx{0};
+    int                 _y_idx{0};
+    int                 _flat_idx{0};
 };
 
 }

@@ -38,6 +38,10 @@ Eigen::Vector3f Transform::homogeneous_mult(const Eigen::Vector3f& other) const 
     return (*this * other + _translation);
 }
 
+Eigen::Vector3f Transform::rotate(const Eigen::Vector3f& other) const {
+    return (_rotation * other);
+}
+
 Transform& Transform::operator*=(const Transform& other) {
     // Assume that we have
     // T_1 R_1 S_1 for one transform and T_2 R_2 S_2 for the other transform.

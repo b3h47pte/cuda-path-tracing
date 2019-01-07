@@ -10,7 +10,11 @@ CudaAccelerationStructure::CudaAccelerationStructure(
     MemoryOwnership ownership):
     CudaGeometry(type),
     _aggregate(cuda_geom, ownership) {
-    set_aabb(_aggregate.bounding_box());
+
+    // This is kinda shitty...
+    _aggregate.bake_from_object(Object());
+    set_aabb(_aggregate.world_space_bounding_box());
+    set_world_space_aabb(_aggregate.world_space_bounding_box());
 }
 
 CudaAccelerationStructure::~CudaAccelerationStructure() {

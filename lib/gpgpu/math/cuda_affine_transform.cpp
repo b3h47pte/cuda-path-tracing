@@ -2,7 +2,8 @@
 
 namespace cpt {
 
-CudaAffineTransform::CudaAffineTransform() {
+CudaAffineTransform::CudaAffineTransform():
+    _linear(CudaMatrix<float,3,3>::Identity()) {
 }
 
 CudaAffineTransform::CudaAffineTransform(const CudaMatrix<float,3,3>& linear, const CudaVector<float,3>& trans):

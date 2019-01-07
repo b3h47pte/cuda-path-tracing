@@ -45,9 +45,15 @@ void CudaGeometryAggregate::unpack_geometry(std::vector<CudaGeometry*>& storage)
 CudaAABB CudaGeometryAggregate::create_aabb() const {
     CudaAABB aabb;
     for (size_t i = 0; i < num_children(); ++i) {
-        aabb.expand(_children[i]->bounding_box());
+        aabb.expand(_children[i]->world_space_bounding_box());
     }
     return aabb;
+}
+
+void CudaGeometryAggregate::bake_from_object(const Object& object) {
+    CudaObject::bake_from_object(object);
+    set_world_space_aabb(bounding_box());
+    set_aabb(bounding_box().transform(world_to_object_xform()));
 }
 
 }

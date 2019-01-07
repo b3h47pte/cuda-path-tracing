@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gpgpu/cuda_geometry.h"
+#include "gpgpu/cuda_utils.h"
 #include "utilities/noncopyable.h"
 #include "utilities/memory_ownership.h"
 #include <vector>
@@ -18,7 +19,10 @@ public:
     void unpack_geometry(std::vector<CudaGeometry*>& storage) override;
     bool unpacked_has_self() const override { return false; }
 
-    size_t num_children() const { return _num_children; }
+    CUDA_DEVHOST size_t num_children() const { return _num_children; }
+    CUDA_DEVHOST CudaGeometry* child(size_t i) const { return _children[i]; }
+
+    void bake_from_object(const Object& object) override;
 
 private:
     CudaAABB create_aabb() const;

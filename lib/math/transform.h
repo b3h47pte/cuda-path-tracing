@@ -31,6 +31,7 @@ public:
 
     Eigen::Vector3f operator*(const Eigen::Vector3f& other) const;
     Eigen::Vector3f homogeneous_mult(const Eigen::Vector3f& other) const;
+    Eigen::Vector3f rotate(const Eigen::Vector3f& other) const;
 
     Transform& operator*=(const Transform& other);
     Transform operator*(const Transform& other) const;

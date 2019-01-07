@@ -5,7 +5,7 @@
 #include <Eigen/Core>
 #include "gpgpu/cuda_utils.h"
 #include "gpgpu/cuda_ptr.h"
-#include <iostream>
+#include <ostream>
 
 namespace cpt {
 
@@ -195,6 +195,12 @@ CUDA_DEVHOST CudaVector<T,3> cross(const CudaVector<T,3>& a, const CudaVector<T,
     ret[1] = a[2] * b[0] - a[0] * b[2];
     ret[2] = a[0] * b[1] - a[1] * b[0];
     return ret;
+}
+
+template<typename T,int Dim>
+CUDA_HOST std::ostream& operator<<(std::ostream& strm, const CudaVector<T,Dim>& o) {
+    strm << o[0] << " " << o[1] << " " << o[2]; 
+    return strm;
 }
 
 }

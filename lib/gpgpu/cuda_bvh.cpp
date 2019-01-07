@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include "gpgpu/cuda_ptr.h"
+#include "gpgpu/math/cuda_vector.h"
 
 namespace cpt {
 
@@ -32,7 +33,7 @@ CudaBVH::CudaBVH(
     std::vector<CudaGeometry*> sorted_geometry(cuda_geom.begin(), cuda_geom.end());
     std::sort(sorted_geometry.begin(), sorted_geometry.end(), 
     [split_axis](CudaGeometry* a, CudaGeometry* b) {
-        return a->centroid()[split_axis] < b->centroid()[split_axis];
+        return a->world_space_bounding_box().centroid()[split_axis] < b->world_space_bounding_box().centroid()[split_axis];
     });
 
     const size_t num_children_per_node = cuda_geom.size() / max_num_children;

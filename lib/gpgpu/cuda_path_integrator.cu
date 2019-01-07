@@ -4,6 +4,8 @@
 #include "gpgpu/cuda_utils.h"
 #include "gpgpu/math/cuda_vector.h"
 
+#define COLOR_INTERSECTION_ERROR 1
+
 namespace cpt {
 namespace {
 
@@ -14,15 +16,33 @@ __global__ void path_trace(CudaRay* rays, const CudaScene* scene, size_t sampleI
 
     CudaRay& ray = rays[pixelIdx];
 
+    CudaVector<float, 3> rgb;
     // See if we intersect anything in the scene.
     CudaIntersection intersection;
-    if (!ray_geometry_intersect(&ray, scene->accel_structure(), &intersection)) {
+    if (!ray_accel_structure_intersect(&ray, scene->accel_structure(), &intersection)) {
         ray.set_alive(false);
+#if COLOR_INTERSECTION_ERROR
+        switch (intersection.error) {
+        case IntersectionError::StackOutOfBounds:
+            rgb[0] = 1.f;
+            break;
+        default:
+            break;
+        }
+#else
         return;
+#endif
     }
 
-    CudaVector<float, 3> rgb;
+#if COLOR_INTERSECTION_ERROR
+    if (intersection.hit_geometry) {
+#endif
+
     rgb[intersection.hit_geometry->id() % 3] = 1.f;
+
+#if COLOR_INTERSECTION_ERROR
+    }
+#endif
 
     // Output.
     for (size_t imgIdx = 0; imgIdx < output->num_images(); ++imgIdx) {

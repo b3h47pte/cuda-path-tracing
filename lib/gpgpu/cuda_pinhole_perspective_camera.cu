@@ -14,6 +14,10 @@ __global__ void generate_pinhole_perspective_rays(CudaSampler* samplers, const C
     }
 
     CudaRay& active_ray = rays[flat_idx];
+    active_ray.dbg_set_x_idx(x);
+    active_ray.dbg_set_y_idx(y);
+    active_ray.dbg_set_flat_idx(flat_idx);
+
     CudaSampler& sampler = samplers[flat_idx];
 
     // Offset from pixel center.
@@ -23,7 +27,7 @@ __global__ void generate_pinhole_perspective_rays(CudaSampler* samplers, const C
         CudaVector<float,2>::Constant(-.5f),
         CudaVector<float,2>::Constant(.5f));
 
-    const CudaVector<float,3>& camera_forward = camera->world_up_dir();
+    const CudaVector<float,3>& camera_forward = camera->world_forward_dir();
     const CudaVector<float,3>& camera_right = camera->world_right_dir();
     const CudaVector<float,3>& camera_up = camera->world_up_dir();
 
@@ -34,8 +38,15 @@ __global__ void generate_pinhole_perspective_rays(CudaSampler* samplers, const C
     CudaVector<float,3> ray_origin = camera->position();
     ray_origin -= camera_forward * camera->focal_length_m();
 
-    const float x_offset = static_cast<float>(x) + 0.5f + pixel_sample[0] - width / 2.f;
-    const float y_offset = static_cast<float>(y) + 0.5f + pixel_sample[1] - height / 2.f;
+    const float x_offset_px = static_cast<float>(x) + 0.5f + pixel_sample[0] - width / 2.f;
+    const float y_offset_px = static_cast<float>(y) + 0.5f + pixel_sample[1] - height / 2.f;
+
+    const float film_width = 
+        2.f * camera->focal_length_m() * ::tan(camera->horizontal_fov_radians() / 2.f);
+    const float film_height = film_width / camera->aspect_ratio();
+
+    const float x_offset = x_offset_px / width * film_width;
+    const float y_offset = y_offset_px / height * film_height;
 
     ray_origin -= camera_right * x_offset;
     ray_origin -= camera_up * y_offset;

@@ -16,6 +16,7 @@ SET(CPT_H_FILES gpgpu/cuda_aabb.h
                 gpgpu/cuda_ray.h
                 gpgpu/cuda_sampler.h
                 gpgpu/cuda_scene.h
+                gpgpu/cuda_stack.h
                 gpgpu/cuda_triangle.h
                 gpgpu/cuda_utils.h
                 gpgpu/cuda_uniform_sampler.h

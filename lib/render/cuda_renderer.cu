@@ -6,6 +6,9 @@
 #include "gpgpu/cuda_utils.h"
 #include <thrust/copy.h>
 
+#include "gpgpu/cuda_camera.h"
+#include <iostream>
+
 namespace cpt {
 
 void CudaRenderer::render(AovOutput& output) const {
@@ -22,8 +25,8 @@ void CudaRenderer::render(AovOutput& output) const {
     CudaRay* end_rays = active_rays + num_rays;
 
     // TODO: Pull from options.
-    const size_t samples_per_pixel = 5;
-    const size_t max_depth = 5;
+    const size_t samples_per_pixel = 1;
+    const size_t max_depth = 1;
     CudaPathIntegrator integrator;
     CudaUniformSampler* samplers = cuda_new_array_device<CudaUniformSampler>(num_rays);
 
