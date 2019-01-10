@@ -7,6 +7,7 @@
 #include "scene/camera/camera.h"
 #include "scene/geometry/geometry.h"
 #include "scene/loader/camera_loader.h"
+#include "scene/loader/light_loader.h"
 #include "scene/loader/mesh_loader.h"
 #include "scene/loader/xform_loader.h"
 #include "scene/scene.h"
@@ -26,6 +27,7 @@ public:
 
     virtual void add_geometry(const GeometryPtr& geometry);
     virtual void add_camera(const std::string& id, const CameraPtr& camera);
+    virtual void add_light(const LightPtr& light);
 
     // Transform stack.
     virtual void push_transform(const Transform& xform);
@@ -38,6 +40,8 @@ private:
 
     std::vector<Transform> _xform_stack;
     Transform _current_xform;
+
+    std::vector<LightPtr> _lights;
 
     void update_current_xform();
 };
@@ -53,6 +57,7 @@ public:
         MeshLoaderPtr mesh_loader;
         CameraLoaderPtr camera_loader;
         XformLoaderPtr xform_loader;
+        LightLoaderPtr light_loader;
 
         SceneLoaderDependencies();
     };
@@ -67,6 +72,7 @@ private:
     virtual void load_json_mesh(const boost::filesystem::path& base_path, const nlohmann::json& jobj);
     virtual void load_json_camera(const nlohmann::json& jobj);
     virtual void load_json_xform(const nlohmann::json& jobj);
+    virtual void load_json_light(const nlohmann::json& jobj);
     virtual void load_json_scene_object_hierarchy(const boost::filesystem::path& base_path, const nlohmann::json& jobj);
     
 };

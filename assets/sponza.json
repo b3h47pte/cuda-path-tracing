@@ -30,6 +30,21 @@
                     }
                 }
             ]
+        },
+        {
+            "type": "xform",
+            "object": {
+                "translation": [0.0, 198.594, 0.0]
+            },
+            "children": [
+                {
+                    "type": "light",
+                    "object": {
+                        "type": "point",
+                        "color": [10.0, 10.0, 10.0]
+                    }
+                }
+            ]
         }
     ]
 }

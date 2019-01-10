@@ -34,6 +34,9 @@ SET(CPT_H_FILES gpgpu/cuda_aabb.h
                 scene/scene.h
                 scene/camera/camera.h
                 scene/camera/pinhole_perspective_camera.h
+                scene/lights/light.h
+                scene/lights/point_light.h
+                scene/loader/light_loader.h
                 scene/loader/scene_loader.h
                 scene/loader/mesh_loader.h
                 scene/loader/camera_loader.h
@@ -84,7 +87,10 @@ SET(CPT_CPP_FILES gpgpu/cuda_aabb.cpp
                   scene/geometry/geometry_aggregate.cpp
                   scene/geometry/vertex_container.cpp
                   scene/geometry/triangle.cpp
+                  scene/lights/light.cpp
+                  scene/lights/point_light.cpp
                   scene/object.cpp
+                  scene/loader/light_loader.cpp
                   scene/loader/scene_loader.cpp
                   scene/loader/mesh_loader.cpp
                   scene/loader/camera_loader.cpp

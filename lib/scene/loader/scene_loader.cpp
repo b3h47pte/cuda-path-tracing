@@ -16,6 +16,7 @@ const std::string MESH_ID = "mesh";
 const std::string ROOT_ID = "root";
 const std::string CAMERA_ID = "camera";
 const std::string TRANSFORM_ID = "xform";
+const std::string LIGHT_ID = "light";
 
 }
 
@@ -35,6 +36,11 @@ void SceneBuilder::add_camera(const std::string& id, const CameraPtr& camera) {
     CHECK_AND_THROW_ERROR(_cameras.find(id) == _cameras.end(), "Can not reuse the same camera ID for two or more cameras.");
     camera->set_object_to_world_xform(current_transform());
     _cameras[id] = camera;
+}
+
+void SceneBuilder::add_light(const LightPtr& light) {
+    light->set_object_to_world_xform(current_transform());
+    _lights.push_back(light);
 }
 
 void SceneBuilder::push_transform(const Transform& xform) {
@@ -63,7 +69,8 @@ SceneLoader::SceneLoaderDependencies::SceneLoaderDependencies():
     scene_builder(std::make_shared<SceneBuilder>()),
     mesh_loader(std::make_shared<MeshLoader>()),
     camera_loader(std::make_shared<CameraLoader>()),
-    xform_loader(std::make_shared<XformLoader>())
+    xform_loader(std::make_shared<XformLoader>()),
+    light_loader(std::make_shared<LightLoader>())
 {}
 
 SceneLoader::SceneLoader(const SceneLoaderDependencies& deps):
@@ -100,6 +107,14 @@ void SceneLoader::load_json_camera(const nlohmann::json& jobj) {
     _deps.scene_builder->add_camera(*id_it, camera);
 }
 
+void SceneLoader::load_json_light(const nlohmann::json& jobj) {
+    auto obj_it = jobj.find("object");
+    CHECK_AND_THROW_ERROR(obj_it != jobj.end(), "Invalid light object. No 'object' specified.");
+
+    LightPtr light = _deps.light_loader->load_light_from_json(*obj_it);
+    _deps.scene_builder->add_light(light);
+}
+
 void SceneLoader::load_json_xform(const nlohmann::json& jobj) {
     auto obj_it = jobj.find("object");
     CHECK_AND_THROW_ERROR(obj_it != jobj.end(), "Invalid transform object. No 'object' specified.");
@@ -122,6 +137,8 @@ void SceneLoader::load_json_scene_object_hierarchy(const bfs::path& base_path, c
         load_json_camera(jobj);
     } else if (*type_it == TRANSFORM_ID) {
         load_json_xform(jobj);
+    } else if (*type_it == LIGHT_ID) {
+        load_json_light(jobj);
     } else {
         THROW_ERROR("Hierarchy object type [" << *type_it << "] is not supported.");
     }
