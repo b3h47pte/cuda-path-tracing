@@ -4,10 +4,12 @@
 #include "gpgpu/cuda_geometry_aggregate.h"
 #include "gpgpu/cuda_pinhole_perspective_camera.h"
 #include "gpgpu/cuda_triangle.h"
+#include "gpgpu/cuda_point_light.h"
 #include "gpgpu/math/cuda_vector.h"
 
 #include "scene/geometry/triangle.h"
 #include "scene/geometry/geometry_aggregate.h"
+#include "scene/lights/point_light.h"
 #include "utilities/log.h"
 #include "utilities/timer.h"
 #include "utilities/progress_bar.h"
@@ -72,6 +74,19 @@ void CudaConverter::convert(const PinholePerspectiveCamera& camera) {
 
     ptr = cuda_new<CudaPinholePerspectiveCamera>(camera);
     ptr->bake_from_object(camera);
+    add_to_cache(key, ptr);
+}
+
+void CudaConverter::convert(const PointLight& light) {
+    auto* key = const_cast<PointLight*>(&light);
+    auto* ptr = get_from_cache<CudaPointLight>(key);
+    if (ptr) {
+        return;
+    }
+
+    ptr = cuda_new<CudaPointLight>();
+    ptr->set_color(eigen_vector_to_cuda<float,3>(light.color()));
+    ptr->bake_from_object(light);
     add_to_cache(key, ptr);
 }
 

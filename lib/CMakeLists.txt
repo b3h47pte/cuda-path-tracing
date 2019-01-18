@@ -10,8 +10,10 @@ SET(CPT_H_FILES gpgpu/cuda_aabb.h
                 gpgpu/cuda_geometry_aggregate.h
                 gpgpu/cuda_image.h
                 gpgpu/cuda_intersection.h
+                gpgpu/cuda_light.h
                 gpgpu/cuda_object.h
                 gpgpu/cuda_path_integrator.h
+                gpgpu/cuda_point_light.h
                 gpgpu/cuda_pinhole_perspective_camera.h
                 gpgpu/cuda_ray.h
                 gpgpu/cuda_sampler.h
@@ -63,16 +65,17 @@ SET(CPT_CPP_FILES gpgpu/cuda_aabb.cpp
                   gpgpu/cuda_acceleration_structure.cpp
                   gpgpu/cuda_bvh.cpp
                   gpgpu/cuda_converter.cpp
-                  gpgpu/cuda_utils.cpp
                   gpgpu/cuda_sampler.cpp
                   gpgpu/cuda_scene.cpp
-                  gpgpu/cuda_triangle.cpp
                   gpgpu/cuda_geometry.cpp
                   gpgpu/cuda_geometry_aggregate.cpp
                   gpgpu/cuda_image.cpp
                   gpgpu/cuda_object.cpp
                   gpgpu/cuda_pinhole_perspective_camera.cpp
+                  gpgpu/cuda_point_light.cpp
                   gpgpu/cuda_ray.cpp
+                  gpgpu/cuda_triangle.cpp
+                  gpgpu/cuda_utils.cpp
                   gpgpu/math/cuda_affine_transform.cpp
                   math/angles.cpp
                   math/distance.cpp

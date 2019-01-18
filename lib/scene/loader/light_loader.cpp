@@ -36,5 +36,4 @@ LightPtr LightLoader::load_point_light_from_json(const nlohmann::json& jobj) {
     return light;
 }
 
-
 }

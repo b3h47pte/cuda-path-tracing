@@ -9,14 +9,22 @@ class Triangle;
 class GeometryAggregate;
 class PinholePerspectiveCamera;
 
+class PointLight;
+
 class GpgpuConverter
 {
 public:
     virtual ~GpgpuConverter() = default;
 
+    // Geometry
     virtual void convert(const Triangle& triangle) = 0;
     virtual void convert(const GeometryAggregate& aggregate) = 0;
+    
+    // Cameras
     virtual void convert(const PinholePerspectiveCamera& camera) = 0;
+
+    // Lights
+    virtual void convert(const PointLight& light) = 0;
 
     void add_to_cache(void* key, void* value) {
         _cache[key] = value;
