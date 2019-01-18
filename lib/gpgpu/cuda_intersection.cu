@@ -12,12 +12,25 @@
 
 namespace cpt {
 
-CUDA_DEVHOST void CudaIntersection::register_hit(const CudaGeometry* geom, float t) {
+CUDA_DEVHOST void CudaIntersection::register_hit(const CudaGeometry* geom, float t, const CudaVector<float,2>& uv) {
     if (hit_geometry && t > hit_t) {
         return;
     }
     hit_geometry = geom;
     hit_t = t;
+    hit_uv = uv;
+}
+
+CUDA_DEVHOST CudaVector<float,3> CudaIntersection::hit_normal() const {
+    if (hit_geometry) {
+        switch (hit_geometry->type()) {
+        case CudaGeometry::Type::Triangle:
+            return triangle_normal(*(static_cast<const CudaTriangle*>(hit_geometry)), hit_uv[0], hit_uv[1]);
+        default:
+            break;
+        }
+    }
+    return CudaVector<float,3>();
 }
 
 CUDA_DEVHOST bool ray_geometry_intersect(const CudaRay* ray, const CudaGeometry* geometry, CudaIntersection* out_intersection) {
@@ -87,7 +100,10 @@ CUDA_DEVHOST bool ray_triangle_intersect(const CudaRay* ray, const CudaTriangle*
     }
 
     if (out_intersection) {
-        out_intersection->register_hit(triangle, t);
+        CudaVector<float,2> uv;
+        uv[0] = u;
+        uv[1] = v;
+        out_intersection->register_hit(triangle, t, uv);
     }
 
     return true;

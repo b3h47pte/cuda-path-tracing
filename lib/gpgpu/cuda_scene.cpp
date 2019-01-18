@@ -46,11 +46,19 @@ CudaScene::CudaScene(const ScenePtr& scene, const std::string& camera_id) {
     const auto& camera = scene->camera(camera_id);
     camera->convert(converter);
     _render_camera = converter.get_from_cache<CudaCamera>(camera.get());
+
+    _num_lights = scene->num_lights();
+    _lights = cuda_new_array<CudaLight*>(scene->num_lights());   
+    for (size_t i = 0; i < scene->num_lights(); ++i) {
+        scene->light(i)->convert(converter);
+        _lights[i] = converter.get_from_cache<CudaLight>(scene->light(i).get());
+    }
 }
 
 CudaScene::~CudaScene() {
     cuda_delete(_accel_structure);
     cuda_delete(_render_camera);
+    cuda_delete_array(_lights, num_lights());
 }
 
 void CudaScene::generate_rays(CudaSampler* samplers, CudaRay* rays, size_t width, size_t height) const {

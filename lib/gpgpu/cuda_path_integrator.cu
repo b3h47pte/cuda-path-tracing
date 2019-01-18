@@ -1,6 +1,7 @@
 #include "cuda_path_integrator.h"
 #include "gpgpu/cuda_acceleration_structure.h"
 #include "gpgpu/cuda_intersection.h"
+#include "gpgpu/cuda_light.h"
 #include "gpgpu/cuda_utils.h"
 #include "gpgpu/math/cuda_vector.h"
 
@@ -38,7 +39,21 @@ __global__ void path_trace(CudaRay* rays, const CudaScene* scene, size_t sampleI
     if (intersection.hit_geometry) {
 #endif
 
-    rgb[intersection.hit_geometry->id() % 3] = 1.f;
+    const CudaVector<float, 3> intersectionPoint = ray.position(intersection.hit_t);
+    const CudaVector<float, 3> intersectionNormal = intersection.hit_normal();
+
+    // Direct lighting.
+    // TODO: Needs to work out the math to do directly lighting to work with monte carlo.
+    for (size_t lightIdx = 0; lightIdx < scene->num_lights(); ++lightIdx) {
+        const CudaLight* light = scene->light(lightIdx);
+
+        // TODO: Actual material system.
+        CudaVector<float, 3> L = light->position() - intersectionPoint;
+        L.normalize();
+
+        const float NoL = dot(intersectionNormal, L);
+        rgb += NoL * light->color();
+    }
 
 #if COLOR_INTERSECTION_ERROR
     }

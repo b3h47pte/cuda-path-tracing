@@ -112,6 +112,7 @@ SET(CPT_CU_FILES render/cuda_renderer.cu
                  gpgpu/cuda_pinhole_perspective_camera.cu
                  gpgpu/cuda_ray.cu
                  gpgpu/cuda_sampler.cu
+                 gpgpu/cuda_triangle.cu
                  gpgpu/cuda_uniform_sampler.cu
                  gpgpu/cuda_utils.cu
                  gpgpu/math/cuda_affine_transform.cu)

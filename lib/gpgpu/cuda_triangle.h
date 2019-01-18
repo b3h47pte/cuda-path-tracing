@@ -25,4 +25,6 @@ private:
     CudaVector<float,2> _uvs[3]; 
 };
 
+CUDA_DEVHOST CudaVector<float,3> triangle_normal(const CudaTriangle& triangle, float u, float v);
+
 }

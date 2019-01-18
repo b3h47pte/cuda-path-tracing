@@ -14,6 +14,7 @@ public:
 
     CUDA_DEVHOST const CudaVector<float,3>& origin() const { return _origin; }
     CUDA_DEVHOST const CudaVector<float,3>& direction() const { return _direction; }
+    CUDA_DEVHOST CudaVector<float,3> position(float t) const { return _origin + t * _direction; }
     CUDA_DEVHOST float max_t() const { return _max_t; }
 
     CUDA_DEVHOST bool is_alive() const { return _alive; }

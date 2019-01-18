@@ -23,7 +23,8 @@ const std::string LIGHT_ID = "light";
 ScenePtr SceneBuilder::construct() {
     auto scene = std::make_shared<Scene>(
         std::move(_geometry),
-        std::move(_cameras));
+        std::move(_cameras),
+        std::move(_lights));
     return scene;
 }
 
